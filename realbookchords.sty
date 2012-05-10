@@ -1,0 +1,118 @@
+\RequirePackage{expl3}[2012/03/03]
+\ProvidesExplPackage
+  {realbookchords}
+  {2012/05/10}
+  {0.1}
+  {Typesetting jazz chords with the `New real Book' font}
+
+\RequirePackage { fontspec , xparse , amsmath }
+
+\newfontfamily \NewRealBookChords
+  [
+    BoldFont        = Real~Book~Title ,
+    ItalicFont      = Real~Book~Title ,
+    BoldItalicFont  = Real~Book~Title ,
+    SlantedFont     = Real~Book~Title ,
+    BoldSlantedFont = Real~Book~Title ,
+    SmallCapsFont   = Real~Book~Title ,
+  ]
+  { New~Real~Book~Chords}
+\newfontfamily \RealBookTitle { Real~Book~Title }
+
+\NewDocumentCommand \jc { m } { \rbc_jc:n { #1 } }
+
+\cs_new_nopar:Npn \rbc_bb:n #1 { \'{a} \rbc_read_tensions:n { #1 } }
+\cs_new_nopar:Npn \rbc_kk:n #1 { \aa{} \rbc_read_tensions:n { #1 } }
+\cs_new_nopar:Npn \rbc_bk:n #1 { \"{a} \rbc_read_tensions:n { #1 } }
+\cs_new_nopar:Npn \rbc_kb:n #1 { \^{a} \rbc_read_tensions:n { #1 } }
+
+\cs_new_nopar:Npn \rbc_read_tensions:n #1
+  {
+    \prop_get:NnN \l_rbc_tensions_prop { #1 } \l_tmpa_tl
+    \tl_use:N \l_tmpa_tl
+    \tl_clear:N \l_tmpa_tl
+  }
+
+\cs_new_nopar:Npn \rbc_jc:n #1
+  {
+    \group_begin:
+      \cs_set_eq:NN \bb \rbc_bb:n
+      \cs_set_eq:NN \bk \rbc_bk:n
+      \cs_set_eq:NN \kb \rbc_kb:n
+      \cs_set_eq:NN \kk \rbc_kk:n
+      \cs_set_eq:NN \b  \rbc_b:
+      \cs_set_eq:NN \k  \rbc_k:
+      \tl_set:Nn \l_tmpa_tl { #1 }
+      \prop_map_inline:Nn \l_rbc_symbols_prop
+        {
+          \tl_set_rescan:Nnn \l_tmpb_tl { } { ##1 }
+          \exp_args:NNo \tl_replace_all:Nnn \l_tmpa_tl { \l_tmpb_tl } { ##2 }
+        }
+      \NewRealBookChords \tl_use:N \l_tmpa_tl
+    \group_end:
+  }
+
+\cs_new_nopar:Npn \rbc_b: { ß }
+\cs_new_nopar:Npn \rbc_k: { ? }
+
+\cs_new_nopar:Npn \rbc_bass_note:n #1
+  { / \box_move_down:nn { 1.25ex } { \hbox:n { \small #1 } } }
+
+\cs_new_nopar:Npn \rbc_is_bass:
+  { \peek_meaning:NT \rbc_bass_note:n { \tex_kern:D -.35ex } }
+
+\prop_new:N \l_rbc_symbols_prop
+\prop_put:Nnn \l_rbc_symbols_prop { omit } { ; }
+\prop_put:Nnn \l_rbc_symbols_prop { dim }  { \_ }
+\prop_put:Nnn \l_rbc_symbols_prop { maj }
+  { \box_move_up:nn { 1ex } { \hbox:n { \addfontfeatures { Scale=.6 } maj } } }
+\prop_put:Nnn \l_rbc_symbols_prop { ma }   { < }
+\prop_put:Nnn \l_rbc_symbols_prop { mi }   { > }
+\prop_put:Nnn \l_rbc_symbols_prop { alt }
+  { \box_move_up:nn { 1ex } { \hbox:n { \addfontfeatures { Scale=.6 } alt. } } }
+\prop_put:Nnn \l_rbc_symbols_prop { add }  { \makeatletter @\makeatother }
+\prop_put:Nnn \l_rbc_symbols_prop { b }
+  {
+     b \peek_meaning:NTF >
+         { \tex_kern:D -.4ex }
+         { \peek_meaning:NTF > { \tex_kern:D -.4ex } }
+  }
+\prop_put:Nnn \l_rbc_symbols_prop { \# }
+  {
+     \# \peek_meaning:NTF >
+          { \tex_kern:D -.3ex }
+          { \peek_meaning:NTF > { \tex_kern:D -.3ex } }
+  }
+\prop_put:Nnn \l_rbc_symbols_prop { * }    { * }
+\prop_put:Nnn \l_rbc_symbols_prop { \k }   { ? }
+\prop_put:Nnn \l_rbc_symbols_prop { \b }   { \b }
+\prop_put:Nnn \l_rbc_symbols_prop { 6/9 }  { \% }
+\prop_put:Nnn \l_rbc_symbols_prop { / }    { \rbc_bass_note:n }
+\prop_put:Nnn \l_rbc_symbols_prop { + }    { + }
+\prop_put:Nnn \l_rbc_symbols_prop { - }    { - }
+\prop_put:Nnn \l_rbc_symbols_prop { ° }    { 0 }
+\prop_put:Nnn \l_rbc_symbols_prop { ( }    { ( }
+\prop_put:Nnn \l_rbc_symbols_prop { ) }    { ) }
+% \prop_put:Nnn \l_rbc_symbols_prop { 0 }    { 0 \rbc_is_bass: }
+\prop_put:Nnn \l_rbc_symbols_prop { 1 }    { 1 \rbc_is_bass: }
+\prop_put:Nnn \l_rbc_symbols_prop { 2 }    { 2 \rbc_is_bass: }
+\prop_put:Nnn \l_rbc_symbols_prop { 3 }    { 3 \rbc_is_bass: }
+\prop_put:Nnn \l_rbc_symbols_prop { 4 }    { 4 \rbc_is_bass: }
+\prop_put:Nnn \l_rbc_symbols_prop { 5 }    { 5 \rbc_is_bass: }
+\prop_put:Nnn \l_rbc_symbols_prop { 6 }    { 6 \rbc_is_bass: }
+\prop_put:Nnn \l_rbc_symbols_prop { 7 }    { 7 \rbc_is_bass: }
+\prop_put:Nnn \l_rbc_symbols_prop { 8 }    { 8 \rbc_is_bass: }
+\prop_put:Nnn \l_rbc_symbols_prop { 9 }    { 9 \rbc_is_bass: }
+
+\prop_new:N \l_rbc_tensions_prop
+\prop_put:Nnn \l_rbc_tensions_prop { 5,5 }   { \`{A} }
+\prop_put:Nnn \l_rbc_tensions_prop { 13,5 }  { \~{A} }
+\prop_put:Nnn \l_rbc_tensions_prop { 9,5 }   { \'{A} }
+\prop_put:Nnn \l_rbc_tensions_prop { 9,9 }   { \"{A} }
+\prop_put:Nnn \l_rbc_tensions_prop { 13,9 }  { \AE{} }
+\prop_put:Nnn \l_rbc_tensions_prop { 11,9 }  { \AA{} }
+\prop_put:Nnn \l_rbc_tensions_prop { 13,11 } { \`{E} }
+\prop_put:Nnn \l_rbc_tensions_prop { 13,13 } { \'{E} }
+\prop_put:Nnn \l_rbc_tensions_prop { 7,6 }   { \"{E} }
+
+\tex_endinput:D
