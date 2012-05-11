@@ -37,12 +37,11 @@
  suffix_3p "\\nohyperpage{\\,ff.}"
 \end{filecontents}
 \documentclass[toc=index,toc=bib]{cnpkgdoc}
-\usepackage{musixtex}
-\let\breve\relax
 \docsetup{
   pkg      = realbookchords ,
   code-box = {skipabove=1ex,skipbelow=1ex}
 }
+\RBCsetup{load-musixtex}
 \addcmds{
   addspace,
   afterruleskip,
@@ -57,6 +56,7 @@
   dt,
   en,
   endpiece,
+  fontspecbreve,
   generalmeter,
   ha,hlp,isluru,
   k,
@@ -64,6 +64,8 @@
   kk,
   mbreve,
   meterfrac,
+  musixtexaddspace,
+  musixtexbreve,
   newfontfamily,
   NewRealBookChords,
   nobarnumbers,
@@ -74,6 +76,7 @@
   RealBookChords,
   RealBookTitle,
   setsign,
+  SongTitle,
   startpiece,
   textordmasculine,
   tslur,
@@ -88,17 +91,12 @@
 \usepackage{hologo}
 \usepackage{csquotes}
 
-% save musixtex's definition of \addspace
-\let\maddspace\addspace
-\let\addspace\relax
 \usepackage[backend=biber,style=alphabetic]{biblatex}
-% restore musixtex's definition of \addspace
-\let\baddspace\addspace
-\let\addspace\maddspace
 \addbibresource{\jobname.bib}
 
 \let\verb\lstinline
 \makeindex
+
 \begin{document}
 
 \section{License and Requirements}
@@ -317,11 +315,32 @@ You can also use the following option:
  \texttt{parse=false}: \rbc[parse=false]{Ama7(omit3) [major]}
 \end{beispiel}
 
+\section{Song Titles}
+\begin{beschreibung}
+ \Befehl[<left>]{<center>}\oa{<right} \cnpkgdocarrow
+ \option{songtitle-format-left}{<code>} Default = \verb=\NewRealBookChords\footnotesize=
+ \option{songtitle-format-center}{<code>} Default = \verb=\NewRealBookChords\Large\centering=
+ \option{songtitle-format-right}{<code>} Default = \verb=\NewRealBookChords\footnotesize=
+ \option{songtitle-pos-left}{l/c/r} Default = \code{l}
+ \option{songtitle-pos-right}{l/c/r} Default = \code{l}
+\end{beschreibung}
+
+\begin{beispiel}
+ \SongTitle{Begin The Beguine}
+ \SongTitle[Medium Swing Tempo]{Begin The Beguine}
+ \SongTitle{Begin The Beguine}[Cole Porter\\arr.: Jerry Sears]
+ \RBCsetup{songtitle-pos-right=r}
+ \SongTitle{Begin The Beguine}[Cole Porter\\arr.: Jerry Sears]
+\end{beispiel}
+
 \section{See it in Action}
 Let's use the \cmd{rbc} command together with \paket{musixtex} for a real example.
 Both \paket{fontspec} which is loaded be \realbookchords and \paket{musixtex}
 define the command \cmd{breve}. The definition of \paket{fontspec} takes place
 \verb=\AtBeginDocument=.
+
+A similar problem arises when \paket{musixtex} is used together with \paket{biblatex}:
+they both define \cmd{addspace}.
 
 You can do something like the following to get them to work together:
 \begin{beispiel}[code only]
@@ -335,17 +354,40 @@ You can do something like the following to get them to work together:
  \end{document}
 \end{beispiel}
 
-A similar problem arises when \paket{musixtex} is used together with \paket{biblatex}:
-they both define \cmd{addspace}.
+Or -- even easier -- load \realbookchords with the \key{load-musixtex} option and
+let it handle things.
+\begin{beispiel}[code only]
+ \documentclass{article}
+ \usepackage[load-musixtex]{realbookchords}
+ \begin{document}
+  do stuff, e.g. restore the `musixtex' definition of \breve
+ \end{document}
+\end{beispiel}
+
+If you use this option \realbookchords loads \paket{musixtex} and sets \cmd{breve}
+to the meaning of \paket{fontspec}. You have the possibility to access \paket{musixtex}'s
+version:
+\begin{beschreibung}
+ \befehl{musixtexbreve} \paket{musixtex}'s original definition.
+ \befehl{fontspecbreve} \paket{fontspec}'s original definition.
+ \option{breve-version}{fontspec/musixtex} sets \cmd{breve} to the definition of the specified
+ package.
+ \befehl{musixtexaddspace} \realbookchords undefines \paket{musixtex}'s \cmd{addspace}
+ but stores the definition in \cmd{musixtexaddspace}. You'll probably need to
+ restore \paket{musixtex}'s definition. If you don't use \paket{biblatex} in the
+ same document there shouldn't be a problem.
+ \option{addspace-version}{musixtex} restores \paket{musixtex}'s definition.
+\end{beschreibung}
 
 Let's take the first eight bars of Kenny Durham's \enquote{Blue Bossa} as an example:
 
 \begin{beispiel}[code only]
 \begin{music}
+ \let\addspace\musixtexaddspace
  \parindent0pt \generalmeter{\meterfrac44}\setsign{1}{-3}\nobarnumbers
+ \SongTitle{Blue Bossa}[\\Kenny Durham]
  \startpiece
  \addspace{.5\afterruleskip}%
- \notes\Uptext{\small\rbc{Bossa}}\en
  \NOtes\qa g\en
  \doublebar % 1
  \NOtes\Uptext{\rbc{Cmi6}}\qlp n\en
@@ -378,10 +420,11 @@ Let's take the first eight bars of Kenny Durham's \enquote{Blue Bossa} as an exa
 \end{beispiel}
 
 \begin{music}
+ \let\addspace\musixtexaddspace
  \parindent0pt \generalmeter{\meterfrac44}\setsign{1}{-3}\nobarnumbers
+ \SongTitle{Blue Bossa}[\\Kenny Durham]
  \startpiece
  \addspace{.5\afterruleskip}%
- \notes\Uptext{\small\rbc{Bossa}}\en
  \NOtes\qa g\en
  \doublebar % 1
  \NOtes\Uptext{\rbc{Cmi6}}\qlp n\en
@@ -413,7 +456,7 @@ Let's take the first eight bars of Kenny Durham's \enquote{Blue Bossa} as an exa
 \end{music}
 
 \appendix
-\let\addspace\baddspace
+
 \printbibliography
 \printindex
 \end{document}

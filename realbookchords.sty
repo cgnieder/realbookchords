@@ -15,20 +15,7 @@
 \bool_if:nF { \xetex_if_engine_p: || \luatex_if_engine_p: }
   { \msg_error:nn { realbookchords } { wrong-engine } \tex_endinput:D }
 
-\RequirePackage { fontspec , xparse }
-
-\cs_set:Nn \rbc_new_font_family:Nnn { \newfontfamily #1 [ #2 ] { #3 } }
-
-\rbc_new_font_family:Nnn \NewRealBookChords
-  {
-    BoldFont        = New~Real~Book~Chords ,
-    ItalicFont      = New~Real~Book~Chords ,
-    BoldItalicFont  = New~Real~Book~Chords ,
-    SlantedFont     = New~Real~Book~Chords ,
-    BoldSlantedFont = New~Real~Book~Chords ,
-    SmallCapsFont   = New~Real~Book~Chords ,
-  }
-  { New~Real~Book~Chords}
+\RequirePackage { xparse , l3keys2e }
 
 % Options:
 \bool_new:N \l_rbc_tensions_brackets_bool
@@ -37,6 +24,7 @@
 \bool_new:N \l_rbc_parse_chord_bool
 \bool_set_true:N \l_rbc_parse_chord_bool
 \bool_new:N \l_rbc_fake_double_numbers_bool
+\bool_new:N \l_rbc_load_musixtex_bool
 
 \keys_define:nn { rbc }
   {
@@ -47,7 +35,17 @@
     fake-double-extensions     .bool_set:N = \l_rbc_fake_double_numbers_bool ,
     fake-double-extensions     .default:n  = true ,
     parse                      .bool_set:N = \l_rbc_parse_chord_bool ,
-    parse                      .default:n  = true
+    parse                      .default:n  = true ,
+    load-musixtex              .code:n     =
+      \bool_set_true:N \l_rbc_load_musixtex_bool
+      \@ifpackageloaded{musixtex}{}
+        {
+          \RequirePackage { musixtex }
+          \cs_set_eq:NN \musixtexbreve \breve
+          \cs_undefine:N \breve
+          \cs_set_eq:NN \musixtexaddspace \addspace
+          \cs_undefine:N \addspace
+        }
   }
 
 % double tensions
@@ -212,7 +210,80 @@
     \group_end:
   }
 
+% song titles:
+\tl_new:N \l_rbc_songtitle_format_left_tl
+\tl_set:Nn \l_rbc_songtitle_format_left_tl { \NewRealBookChords\footnotesize }
+\tl_new:N \l_rbc_songtitle_format_center_tl
+\tl_set:Nn \l_rbc_songtitle_format_center_tl { \NewRealBookChords\Large\centering }
+\tl_new:N \l_rbc_songtitle_format_right_tl
+\tl_set:Nn \l_rbc_songtitle_format_right_tl { \NewRealBookChords\footnotesize }
+\tl_new:N \l_rbc_songtitle_position_left_tl
+\tl_set:Nn \l_rbc_songtitle_position_left_tl { l }
+\tl_new:N \l_rbc_songtitle_position_right_tl
+\tl_set:Nn \l_rbc_songtitle_position_right_tl { l }
+
+\keys_define:nn { rbc }
+  {
+    songtitle-format-left   .tl_set:N = \l_rbc_songtitle_format_left_tl ,
+    songtitle-format-center .tl_set:N = \l_rbc_songtitle_format_center_tl ,
+    songtitle-format-right  .tl_set:N = \l_rbc_songtitle_format_right_tl ,
+    songtitle-pos-left      .tl_set:N = \l_rbc_songtitle_position_left_tl ,
+    songtitle-pos-right     .tl_set:N = \l_rbc_songtitle_position_right_tl
+  }
+
+\NewDocumentCommand \SongTitle { omo }
+  {
+    \IfNoValueF { #1 }
+      {
+        \rlap
+          {
+            \tl_use:N \l_rbc_songtitle_format_left_tl
+            \tabular { @{} \l_rbc_songtitle_position_left_tl } #1 \endtabular
+          }
+      }
+    \parbox [ b ] { \dim_eval:n { \linewidth - \parindent } }
+      { \tl_use:N \l_rbc_songtitle_format_center_tl #2 }
+    \IfNoValueF { #3 }
+      {
+        \llap
+          {
+            \tl_use:N \l_rbc_songtitle_format_right_tl
+            \tabular { @{} \l_rbc_songtitle_position_right_tl } #3 \endtabular
+          }
+      }
+  }
+
 % setup
 \NewDocumentCommand \RBCsetup { m } { \keys_set:nn { rbc } { #1 } }
+
+\ProcessKeysOptions { rbc }
+
+\RequirePackage { fontspec }
+
+\cs_set_eq:NN \fontspecbreve \breve
+
+\cs_set:Nn \rbc_new_font_family:Nnn { \newfontfamily #1 [ #2 ] { #3 } }
+
+\rbc_new_font_family:Nnn \NewRealBookChords
+  {
+    BoldFont        = New~Real~Book~Chords ,
+    ItalicFont      = New~Real~Book~Chords ,
+    BoldItalicFont  = New~Real~Book~Chords ,
+    SlantedFont     = New~Real~Book~Chords ,
+    BoldSlantedFont = New~Real~Book~Chords ,
+    SmallCapsFont   = New~Real~Book~Chords ,
+  }
+  { New~Real~Book~Chords}
+
+\keys_define:nn { rbc }
+  {
+    breve-version               .choice: ,
+    breve-version / musixtex    .code:n = \cs_set_eq:NN \breve \musixtexbreve ,
+    breve-version / fontspec    .code:n = \cs_set_eq:NN \breve \fontspecbreve ,
+    addspace-version            .choice: ,
+    addspace-version / musixtex .code:n =
+      \bool_if:NT \l_rbc_load_musixtex_bool
+        { \cs_set_eq:NN \addspace \musixtexaddspace }
+  }
 
 \tex_endinput:D
