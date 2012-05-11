@@ -3,43 +3,124 @@
   {realbookchords}
   {2012/05/10}
   {0.1}
-  {Typesetting jazz chords with the `New real Book' font}
+  {Typesetting jazz chords with the `Real Book' way}
 
-\RequirePackage { fontspec , xparse , amsmath }
-
-\newfontfamily \NewRealBookChords
-  [
-    BoldFont        = Real~Book~Title ,
-    ItalicFont      = Real~Book~Title ,
-    BoldItalicFont  = Real~Book~Title ,
-    SlantedFont     = Real~Book~Title ,
-    BoldSlantedFont = Real~Book~Title ,
-    SmallCapsFont   = Real~Book~Title ,
-  ]
-  { New~Real~Book~Chords}
-\newfontfamily \RealBookTitle { Real~Book~Title }
-
-\NewDocumentCommand \jc { m } { \rbc_jc:n { #1 } }
-
-\cs_new_nopar:Npn \rbc_bb:n #1 { \'{a} \rbc_read_tensions:n { #1 } }
-\cs_new_nopar:Npn \rbc_kk:n #1 { \aa{} \rbc_read_tensions:n { #1 } }
-\cs_new_nopar:Npn \rbc_bk:n #1 { \"{a} \rbc_read_tensions:n { #1 } }
-\cs_new_nopar:Npn \rbc_kb:n #1 { \^{a} \rbc_read_tensions:n { #1 } }
-
-\cs_new_nopar:Npn \rbc_read_tensions:n #1
+\msg_set:nnnn { realbookchords } { wrong-engine }
+  { `realbookchords'~needs~either~to~be~run~with~XeLaTeX~or~with~LuaLaTeX. }
   {
-    \prop_get:NnN \l_rbc_tensions_prop { #1 } \l_tmpa_tl
-    \tl_use:N \l_tmpa_tl
-    \tl_clear:N \l_tmpa_tl
+    `realbookchords'~needs~either~to~be~run~with~XeLaTeX~or~with~LuaLaTeX.~
+    Since~you're~using~something~different~I~will~abort!
   }
 
-\cs_new_nopar:Npn \rbc_jc:n #1
+\bool_if:nF { \xetex_if_engine_p: || \luatex_if_engine_p: }
+  { \msg_error:nn { realbookchords } { wrong-engine } \tex_endinput:D }
+
+\RequirePackage { fontspec , xparse }
+
+\cs_set:Nn \rbc_new_font_family:Nnn { \newfontfamily #1 [ #2 ] { #3 } }
+
+\rbc_new_font_family:Nnn \NewRealBookChords
+  {
+    BoldFont        = New~Real~Book~Chords ,
+    ItalicFont      = New~Real~Book~Chords ,
+    BoldItalicFont  = New~Real~Book~Chords ,
+    SlantedFont     = New~Real~Book~Chords ,
+    BoldSlantedFont = New~Real~Book~Chords ,
+    SmallCapsFont   = New~Real~Book~Chords ,
+  }
+  { New~Real~Book~Chords}
+
+% Options:
+\bool_new:N \l_rbc_tensions_brackets_bool
+\bool_set_true:N \l_rbc_tensions_brackets_bool
+\bool_new:N \l_rbc_fake_symbols_bool
+\bool_new:N \l_rbc_parse_chord_bool
+\bool_set_true:N \l_rbc_parse_chord_bool
+\bool_new:N \l_rbc_fake_double_numbers_bool
+
+\keys_define:nn { rbc }
+  {
+    double-extensions-brackets .bool_set:N = \l_rbc_tensions_brackets_bool ,
+    double-extensions-brackets .default:n  = true ,
+    use-fake-symbols           .bool_set:N = \l_rbc_fake_symbols_bool ,
+    use-fake-symbols           .default:n  = true ,
+    fake-double-extensions     .bool_set:N = \l_rbc_fake_double_numbers_bool ,
+    fake-double-extensions     .default:n  = true ,
+    parse                      .bool_set:N = \l_rbc_parse_chord_bool ,
+    parse                      .default:n  = true
+  }
+
+% double tensions
+\cs_new_nopar:Npn \rbc_bb:n #1 { \rbc_read_double_tensions:nn { bb } { #1 } }
+\cs_new_nopar:Npn \rbc_kk:n #1 { \rbc_read_double_tensions:nn { kk } { #1 } }
+\cs_new_nopar:Npn \rbc_bk:n #1 { \rbc_read_double_tensions:nn { bk } { #1 } }
+\cs_new_nopar:Npn \rbc_kb:n #1 { \rbc_read_double_tensions:nn { kb } { #1 } }
+
+\cs_new_nopar:Npn \rbc_b: { ß }
+\cs_new_nopar:Npn \rbc_k: { ? }
+
+\prop_new:N \l_rbc_double_tensions_signs_prop
+\prop_put:Nnn \l_rbc_double_tensions_signs_prop { bb } { \'{a} }
+\prop_put:Nnn \l_rbc_double_tensions_signs_prop { kk } { \aa{} }
+\prop_put:Nnn \l_rbc_double_tensions_signs_prop { bk } { \"{a} }
+\prop_put:Nnn \l_rbc_double_tensions_signs_prop { kb } { \^{a} }
+\prop_put:Nnn \l_rbc_double_tensions_signs_prop { B  } { \rbc_b: }
+\prop_put:Nnn \l_rbc_double_tensions_signs_prop { K  } { \rbc_k: }
+\prop_put:Nnn \l_rbc_double_tensions_signs_prop { b  } { \`{a} }
+\prop_put:Nnn \l_rbc_double_tensions_signs_prop { k  } { \~{a} }
+
+\prop_new:N \l_rbc_double_tensions_numbers_prop
+\prop_put:Nnn \l_rbc_double_tensions_numbers_prop { 5,5 }   { \`{A} }
+\prop_put:Nnn \l_rbc_double_tensions_numbers_prop { 9,5 }   { \'{A} }
+\prop_put:Nnn \l_rbc_double_tensions_numbers_prop { 11,5 }  { \^{A} }
+\prop_put:Nnn \l_rbc_double_tensions_numbers_prop { 13,5 }  { \~{A} }
+\prop_put:Nnn \l_rbc_double_tensions_numbers_prop { 7,6 }   { \"{E} }
+\prop_put:Nnn \l_rbc_double_tensions_numbers_prop { 9,9 }   { \"{A} }
+\prop_put:Nnn \l_rbc_double_tensions_numbers_prop { 11,9 }  { \AA{} }
+\prop_put:Nnn \l_rbc_double_tensions_numbers_prop { 13,9 }  { \AE{} }
+\prop_put:Nnn \l_rbc_double_tensions_numbers_prop { 13,11 } { \`{E} }
+\prop_put:Nnn \l_rbc_double_tensions_numbers_prop { 13,13 } { \'{E} }
+
+\cs_new_nopar:Npn \rbc_read_double_tensions:nn #1#2
+  {
+    \bool_if:NT \l_rbc_tensions_brackets_bool { [ }
+    \prop_get:NnNT \l_rbc_double_tensions_signs_prop { #1 } \l_tmpa_tl
+      { \tl_use:N \l_tmpa_tl \tl_clear:N \l_tmpa_tl }
+    \bool_if:NTF \l_rbc_fake_double_numbers_bool
+      { \rbc_fake_double_numbers:w #2 \q_stop }
+      {
+        \prop_get:NnNTF \l_rbc_double_tensions_numbers_prop { #2 } \l_tmpb_tl
+          { \tl_use:N \l_tmpb_tl \tl_clear:N \l_tmpb_tl }
+          { \rbc_fake_double_numbers:w #2 \q_stop }
+      }
+    \bool_if:NT \l_rbc_tensions_brackets_bool { ] }
+  }
+
+\cs_new_nopar:Npn \rbc_dt:w
+  { \peek_meaning:NTF [ { \rbc_dt_auxi:w } { \rbc_dt_auxii:n } }
+
+\cs_new_nopar:Npn \rbc_dt_auxi:w [#1]#2
+  { \rbc_read_double_tensions:nn { #1 } { #2 } }
+
+\cs_new_nopar:Npn \rbc_dt_auxii:n #1
+  { \rbc_read_double_tensions:nn { } { #1 } }
+
+\cs_new_nopar:Npn \rbc_fake_double_numbers:w #1,#2 \q_stop
+  {
+    \box_move_up:nn { .0ex } { \hbox:n { \addfontfeatures { Scale=.9 } #1 } }
+    \tex_kern:D -.5ex
+    \box_move_down:nn { .85ex } { \hbox:n { \addfontfeatures { Scale=.9 } #2 } }
+  }
+
+% main command:
+\cs_new_nopar:Npn \rbc_rbc:n #1
   {
     \group_begin:
       \cs_set_eq:NN \bb \rbc_bb:n
       \cs_set_eq:NN \bk \rbc_bk:n
       \cs_set_eq:NN \kb \rbc_kb:n
       \cs_set_eq:NN \kk \rbc_kk:n
+      \cs_set_eq:NN \dt \rbc_dt:w
       \cs_set_eq:NN \b  \rbc_b:
       \cs_set_eq:NN \k  \rbc_k:
       \tl_set:Nn \l_tmpa_tl { #1 }
@@ -52,37 +133,43 @@
     \group_end:
   }
 
-\cs_new_nopar:Npn \rbc_b: { ß }
-\cs_new_nopar:Npn \rbc_k: { ? }
-
+% bass notes:
 \cs_new_nopar:Npn \rbc_bass_note:n #1
-  { / \box_move_down:nn { 1.25ex } { \hbox:n { \small #1 } } }
+  { / \box_move_down:nn { 1.25ex } { \hbox:n { \addfontfeatures { Scale=.75 } #1 } } }
 
 \cs_new_nopar:Npn \rbc_is_bass:
   { \peek_meaning:NT \rbc_bass_note:n { \tex_kern:D -.35ex } }
 
+% fake symbols:
+\cs_new_nopar:Npn \rbc_fake_symbol:nn #1#2
+  {
+    \bool_if:nTF { \tl_if_blank_p:n { #2 } || \l_rbc_fake_symbols_bool }
+      {
+        \box_move_up:nn { 1.05ex }
+          { \hbox:n { \addfontfeatures { Scale=.565 } #1 \tex_kern:D .1ex } }
+      }
+      { #2 }
+  }
+
+\cs_new_nopar:Npn \rbc_peek_mima:
+  {
+    \peek_meaning:NTF >
+      { \tex_kern:D -.4ex }
+      { \peek_meaning:NTF > { \tex_kern:D -.4ex } }
+  }
+
+% symbols; strings to be replaced when parse=true
 \prop_new:N \l_rbc_symbols_prop
-\prop_put:Nnn \l_rbc_symbols_prop { omit } { ; }
-\prop_put:Nnn \l_rbc_symbols_prop { dim }  { \_ }
-\prop_put:Nnn \l_rbc_symbols_prop { maj }
-  { \box_move_up:nn { 1ex } { \hbox:n { \addfontfeatures { Scale=.6 } maj } } }
+\prop_put:Nnn \l_rbc_symbols_prop { omit } { \rbc_fake_symbol:nn { omit } { ; } }
+\prop_put:Nnn \l_rbc_symbols_prop { dim }  { \rbc_fake_symbol:nn { dim. } { \_ } }
+\prop_put:Nnn \l_rbc_symbols_prop { maj }  { \rbc_fake_symbol:nn { maj } { } }
 \prop_put:Nnn \l_rbc_symbols_prop { ma }   { < }
 \prop_put:Nnn \l_rbc_symbols_prop { mi }   { > }
-\prop_put:Nnn \l_rbc_symbols_prop { alt }
-  { \box_move_up:nn { 1ex } { \hbox:n { \addfontfeatures { Scale=.6 } alt. } } }
-\prop_put:Nnn \l_rbc_symbols_prop { add }  { \makeatletter @\makeatother }
-\prop_put:Nnn \l_rbc_symbols_prop { b }
-  {
-     b \peek_meaning:NTF >
-         { \tex_kern:D -.4ex }
-         { \peek_meaning:NTF > { \tex_kern:D -.4ex } }
-  }
-\prop_put:Nnn \l_rbc_symbols_prop { \# }
-  {
-     \# \peek_meaning:NTF >
-          { \tex_kern:D -.3ex }
-          { \peek_meaning:NTF > { \tex_kern:D -.3ex } }
-  }
+\prop_put:Nnn \l_rbc_symbols_prop { alt }  { \rbc_fake_symbol:nn { alt. } { } }
+\prop_put:Nnn \l_rbc_symbols_prop { sus }  { \rbc_fake_symbol:nn { sus } { } }
+\prop_put:Nnn \l_rbc_symbols_prop { add }  { \rbc_fake_symbol:nn { add } { \makeatletter @\makeatother } }
+\prop_put:Nnn \l_rbc_symbols_prop { b }    { b \rbc_peek_mima: }
+\prop_put:Nnn \l_rbc_symbols_prop { \# }   { \# \rbc_peek_mima: }
 \prop_put:Nnn \l_rbc_symbols_prop { * }    { * }
 \prop_put:Nnn \l_rbc_symbols_prop { \k }   { ? }
 \prop_put:Nnn \l_rbc_symbols_prop { \b }   { \b }
@@ -90,10 +177,11 @@
 \prop_put:Nnn \l_rbc_symbols_prop { / }    { \rbc_bass_note:n }
 \prop_put:Nnn \l_rbc_symbols_prop { + }    { + }
 \prop_put:Nnn \l_rbc_symbols_prop { - }    { - }
-\prop_put:Nnn \l_rbc_symbols_prop { ° }    { 0 }
+\prop_put:Nnn \l_rbc_symbols_prop { ° }    { \textordmasculine}
+\prop_put:Nnn \l_rbc_symbols_prop { \dim } { \textordmasculine}
 \prop_put:Nnn \l_rbc_symbols_prop { ( }    { ( }
 \prop_put:Nnn \l_rbc_symbols_prop { ) }    { ) }
-% \prop_put:Nnn \l_rbc_symbols_prop { 0 }    { 0 \rbc_is_bass: }
+\prop_put:Nnn \l_rbc_symbols_prop { 0 }    { 0 \rbc_is_bass: }
 \prop_put:Nnn \l_rbc_symbols_prop { 1 }    { 1 \rbc_is_bass: }
 \prop_put:Nnn \l_rbc_symbols_prop { 2 }    { 2 \rbc_is_bass: }
 \prop_put:Nnn \l_rbc_symbols_prop { 3 }    { 3 \rbc_is_bass: }
@@ -104,15 +192,27 @@
 \prop_put:Nnn \l_rbc_symbols_prop { 8 }    { 8 \rbc_is_bass: }
 \prop_put:Nnn \l_rbc_symbols_prop { 9 }    { 9 \rbc_is_bass: }
 
-\prop_new:N \l_rbc_tensions_prop
-\prop_put:Nnn \l_rbc_tensions_prop { 5,5 }   { \`{A} }
-\prop_put:Nnn \l_rbc_tensions_prop { 13,5 }  { \~{A} }
-\prop_put:Nnn \l_rbc_tensions_prop { 9,5 }   { \'{A} }
-\prop_put:Nnn \l_rbc_tensions_prop { 9,9 }   { \"{A} }
-\prop_put:Nnn \l_rbc_tensions_prop { 13,9 }  { \AE{} }
-\prop_put:Nnn \l_rbc_tensions_prop { 11,9 }  { \AA{} }
-\prop_put:Nnn \l_rbc_tensions_prop { 13,11 } { \`{E} }
-\prop_put:Nnn \l_rbc_tensions_prop { 13,13 } { \'{E} }
-\prop_put:Nnn \l_rbc_tensions_prop { 7,6 }   { \"{E} }
+% user commands:
+\NewDocumentCommand \rbc { som }
+  {
+    \group_begin:
+      \IfBooleanT { #1 } { \bool_set_false:N \l_rbc_tensions_brackets_bool }
+      \IfNoValueF { #2 } { \keys_set:nn { rbc } { #2 } }
+      \bool_if:NTF \l_rbc_parse_chord_bool
+        { \rbc_rbc:n { #3 } }
+        { \NewRealBookChords #3 }
+    \group_end:
+  }
+
+\NewDocumentCommand \dt { om }
+  {
+    \group_begin:
+      \NewRealBookChords
+      \rbc_read_double_tensions:nn { #1 } { #2 }
+    \group_end:
+  }
+
+% setup
+\NewDocumentCommand \RBCsetup { m } { \keys_set:nn { rbc } { #1 } }
 
 \tex_endinput:D
