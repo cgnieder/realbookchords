@@ -1,7 +1,14 @@
+% arara: xelatex
+% arara: musixtex
+% arara: xelatex
+% arara: biber
+% arara: makeindex: { sort: true, style: realbookchords_en.ist }
+% arara: xelatex
+% arara: xelatex
 % --------------------------------------------------------------------------
-% the REALBOOKCHORDS package v 0.1beta
+% the REALBOOKCHORDS package
 % 
-%   Typesetting jazz chords with the `Real Book' way
+%   Typesetting jazz chords the `Real Book' way
 % 
 % 2012/05/15
 % --------------------------------------------------------------------------
@@ -32,50 +39,35 @@
 % If you have any ideas, questions, suggestions or bugs to report, please
 % feel free to contact me.
 % --------------------------------------------------------------------------
-\begin{filecontents}{\jobname.bib}
-@online{web:pietsch:fonts,
-  author  = {Jochen Pietsch} ,
-  title   = {Jazz Fonts} ,
-  url     = {http://notation.jochenpietsch.de/index_e.html} ,
-  urldate = {2012-05-10}
-}
-@book{book:realbook,
-  author    = {Various} ,
-  title     = {The Real Book Volume I} ,
-  subtitle  = {C Edition} ,
-  publisher = {Hal Leonard Publishing Corporation} ,
-  isbn      = {978-0634060380} ,
-  date      = {2000-01-01} ,
-  edition   = {6th edition}
-}
-@book{book:newrealbook,
-  author    = {Various} ,
-  title     = {The New Real Book Volume I} ,
-  subtitle  = {C Edition} ,
-  publisher = {Ama Verlag} ,
-  isbn      = {978-0961470142} ,
-  date      = {2009-02-12} ,
-  edition   = {1st edition}
-}
-\end{filecontents}
-\begin{filecontents}{index_en.ist}
- preamble "\\begin{theindex}\n Section titles are indicated \\textbf{bold}, packages \\textsf{sans serif}, commands \\code{\\textbackslash\\textcolor{code}{brown}} and options \\textcolor{key}{\\code{green}}.\\newline\n\n"
- heading_prefix "{\\bfseries "
- heading_suffix "\\hfil}\\nopagebreak\n"
- headings_flag  1
- delim_0 "\\dotfill "
- delim_1 "\\dotfill "
- delim_2 "\\dotfill "
- delim_r "\\nohyperpage{\\textendash}"
- suffix_2p "\\nohyperpage{\\,f.}"
- suffix_3p "\\nohyperpage{\\,ff.}"
-\end{filecontents}
 \documentclass[toc=index,toc=bib]{cnpkgdoc}
 \docsetup{
-  pkg      = realbookchords ,
-  code-box = {skipabove=1ex,skipbelow=1ex}
+  pkg      = [load-musixtex]realbookchords ,
+  code-box = {
+    backgroundcolor  = gray!7!white ,
+    skipbelow        = .6\baselineskip plus .5ex minus .5ex ,
+    skipabove        = .6\baselineskip plus .5ex minus .5ex ,
+    roundcorner      = 3pt ,
+  }
 }
-\RBCsetup{load-musixtex}
+
+\AtBeginDocument{
+\setmainfont[Ligatures=TeX,RawFeature=+onum]{Linux Libertine O}
+\setsansfont[Ligatures=TeX,RawFeature=+onum]{Linux Biolinum O}
+}
+
+\usepackage{fnpct}
+\cnpkgcolors{
+  main   => cnpkgred ,
+  key    => yellow!40!brown ,
+  module => cnpkgblue ,
+  link   => black!90
+}
+
+\renewcommand*\othersectionlevelsformat[3]{%
+  \textcolor{main}{#3\autodot}\enskip}
+\renewcommand*\partformat{%
+  \textcolor{main}{\partname~\thepart\autodot}}
+
 \addcmds{
   addspace,
   afterruleskip,
@@ -129,12 +121,55 @@
 \usepackage[backend=biber,style=alphabetic]{biblatex}
 \addbibresource{\jobname.bib}
 
+\usepackage{filecontents}
+\begin{filecontents}{\jobname.bib}
+@online{web:pietsch:fonts,
+  author  = {Jochen Pietsch} ,
+  title   = {Jazz Fonts} ,
+  url     = {http://notation.jochenpietsch.de/index_e.html} ,
+  urldate = {2012-05-10}
+}
+@book{book:realbook,
+  author    = {Various} ,
+  title     = {The Real Book Volume I} ,
+  subtitle  = {C Edition} ,
+  publisher = {Hal Leonard Publishing Corporation} ,
+  isbn      = {978-0634060380} ,
+  date      = {2000-01-01} ,
+  edition   = {6th edition}
+}
+@book{book:newrealbook,
+  author    = {Various} ,
+  title     = {The New Real Book Volume I} ,
+  subtitle  = {C Edition} ,
+  publisher = {Ama Verlag} ,
+  isbn      = {978-0961470142} ,
+  date      = {2009-02-12} ,
+  edition   = {1st edition}
+}
+\end{filecontents}
+
+\usepackage{makeidx}
+\begin{filecontents}{\jobname.ist}
+ heading_prefix "{\\bfseries "
+ heading_suffix "\\hfil}\\nopagebreak\n"
+ headings_flag  1
+ delim_0 "\\dotfill "
+ delim_1 "\\dotfill "
+ delim_2 "\\dotfill "
+ delim_r "\\nohyperpage{\\textendash}"
+ suffix_2p "\\nohyperpage{\\,f.}"
+ suffix_3p "\\nohyperpage{\\,ff.}"
+\end{filecontents}
+
 \let\verb\lstinline
 \makeindex
 
 \begin{document}
+\RBCsetup{breve-version=musixtex}
 
 \section{License and Requirements}
+
 \realbookchords is placed under the terms of the LaTeX Project Public License,
 version 1.3 or later (\url{http://www.latex-project.org/lppl.txt}).
 It has the status \enquote{maintained}.
@@ -352,7 +387,7 @@ You can also use the following option:
 
 \section{Song Titles}
 \begin{beschreibung}
- \Befehl[<left>]{<center>}\oa{<right} \cnpkgdocarrow
+ \Befehl{SongTitle}[<left>]{<center>}\oa{<right} \cnpkgdocarrow
  \option{songtitle-format-left}{<code>} Default = \verb=\NewRealBookChords\footnotesize=
  \option{songtitle-format-center}{<code>} Default = \verb=\NewRealBookChords\Large\centering=
  \option{songtitle-format-right}{<code>} Default = \verb=\NewRealBookChords\footnotesize=
@@ -398,6 +433,8 @@ let it handle things.
   do stuff, e.g. restore the `musixtex' definition of \breve
  \end{document}
 \end{beispiel}
+Note that this option should be used as a package option and \emph{not} via
+\cmd{RBCsetup}.
 
 If you use this option \realbookchords loads \paket{musixtex} and sets \cmd{breve}
 to the meaning of \paket{fontspec}. You have the possibility to access \paket{musixtex}'s
@@ -454,6 +491,7 @@ Let's take the first eight bars of Kenny Durham's \enquote{Blue Bossa} as an exa
 \end{music}
 \end{beispiel}
 
+\newpage
 \begin{music}
  \let\addspace\musixtexaddspace
  \parindent0pt \generalmeter{\meterfrac44}\setsign{1}{-3}\nobarnumbers
@@ -493,5 +531,9 @@ Let's take the first eight bars of Kenny Durham's \enquote{Blue Bossa} as an exa
 \appendix
 
 \printbibliography
+
+\setindexpreamble{Section titles are indicated \textbf{bold}, packages
+\textsf{sans serif}, commands \code{\textbackslash\textcolor{code}{brown}}
+ and options \textcolor{key}{\code{yellow}}.\par\bigskip}
 \printindex
 \end{document}
