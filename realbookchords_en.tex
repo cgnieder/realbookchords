@@ -1,8 +1,5 @@
-% arara: xelatex
-% arara: musixtex
-% arara: xelatex
+% arara: musixtex: { engine: xelatex }
 % arara: biber
-% arara: makeindex: { sort: true, style: realbookchords_en.ist }
 % arara: xelatex
 % arara: xelatex
 % --------------------------------------------------------------------------
@@ -10,13 +7,13 @@
 % 
 %   Typesetting jazz chords the `Real Book' way
 % 
-% 2012/05/15
+% 2013/04/25
 % --------------------------------------------------------------------------
 % Clemens Niederberger
 % Web:    https://bitbucket.org/cgnieder/realbookchords/
 % E-Mail: contact@mychemistry.eu
 % --------------------------------------------------------------------------
-% Copyright 2012 Clemens Niederberger
+% Copyright 2012--2013 Clemens Niederberger
 % 
 % This work may be distributed and/or modified under the
 % conditions of the LaTeX Project Public License, either version 1.3
@@ -39,9 +36,11 @@
 % If you have any ideas, questions, suggestions or bugs to report, please
 % feel free to contact me.
 % --------------------------------------------------------------------------
+\let\rm\rmfamily
+\RequirePackage[load-musixtex]{realbookchords}
 \documentclass[toc=index,toc=bib]{cnpkgdoc}
 \docsetup{
-  pkg      = [load-musixtex]realbookchords ,
+  pkg      = realbookchords ,
   code-box = {
     backgroundcolor  = gray!7!white ,
     skipbelow        = .6\baselineskip plus .5ex minus .5ex ,
@@ -49,11 +48,12 @@
     roundcorner      = 3pt ,
   }
 }
+\usepackage{polyglossia}
+\setmainlanguage{english}
+\usepackage[oldstyle,proportional]{libertine}
+\usepackage{libertinehologopatch}
 
-\AtBeginDocument{
-\setmainfont[Ligatures=TeX,RawFeature=+onum]{Linux Libertine O}
-\setsansfont[Ligatures=TeX,RawFeature=+onum]{Linux Biolinum O}
-}
+\setmonofont[Ligatures=TeX,Scale=MatchLowercase]{Bitstream Vera Sans Mono}
 
 \usepackage{fnpct}
 \cnpkgcolors{
@@ -69,53 +69,22 @@
   \textcolor{main}{\partname~\thepart\autodot}}
 
 \addcmds{
-  addspace,
-  afterruleskip,
-  AtBeginDocument,
-  b,
-  bar,
-  bb,
-  bk,
-  breve,
-  ca,
-  doublebar,
-  dt,
-  en,
-  endpiece,
-  fontspecbreve,
-  generalmeter,
-  ha,hlp,isluru,
-  k,
-  kb,
-  kk,
-  mbreve,
-  meterfrac,
-  musixtexaddspace,
-  musixtexbreve,
-  newfontfamily,
-  NewRealBookChords,
-  nobarnumbers,
+  addspace, afterruleskip, AtBeginDocument,
+  b, bar, bb, bk, breve,
+  ca, doublebar, dt, en, endpiece, fontspecbreve,
+  generalmeter, ha, hlp, isluru, k, kb, kk,
+  mbreve, meterfrac, musixtexaddspace, musixtexbreve,
+  newfontfamily, NewRealBookChords, nobarnumbers,
   notes,Notes,NOtes,NOTes,NOTEs,
-  qlp,qu,
-  rbc,
-  RBCsetup,
-  RealBookChords,
-  RealBookTitle,
-  setsign,
-  SongTitle,
-  startpiece,
-  textordmasculine,
-  tslur,
-  Uptext
+  qlp,qu, rbc, RBCsetup, RealBookChords, RealBookTitle,
+  setsign, SongTitle, startpiece,
+  textordmasculine, tslur, Uptext
 }
-\usepackage{polyglossia}
-  \setmainlanguage{english}
 
 \newfontfamily\RealBookTitle{Real Book Title}
 \newfontfamily\RealBookChords{RealBook Chords}
 
 \usepackage{ccicons}
-\usepackage{hologo}
 \usepackage{csquotes}
 
 \usepackage[backend=biber,style=alphabetic]{biblatex}
@@ -149,21 +118,48 @@
 }
 \end{filecontents}
 
-\usepackage{makeidx}
-\begin{filecontents}{\jobname.ist}
+\usepackage{imakeidx}
+\begin{filecontents*}{\jobname.ist}
  heading_prefix "{\\bfseries "
  heading_suffix "\\hfil}\\nopagebreak\n"
  headings_flag  1
- delim_0 "\\dotfill "
- delim_1 "\\dotfill "
- delim_2 "\\dotfill "
- delim_r "\\nohyperpage{\\textendash}"
+ delim_0 "\\dotfill\\hyperpage{"
+ delim_1 "\\dotfill\\hyperpage{"
+ delim_2 "\\dotfill\\hyperpage{"
+ delim_r "}\\textendash\\hyperpage{"
+ delim_t "}"
  suffix_2p "\\nohyperpage{\\,f.}"
  suffix_3p "\\nohyperpage{\\,ff.}"
-\end{filecontents}
+\end{filecontents*}
+\indexsetup{othercode=\footnotesize}
+\makeindex[options={-s \jobname.ist},intoc,columns=3,columnsep=1em]
 
 \let\verb\lstinline
-\makeindex
+
+\newcommand*\Default[1]{%
+  \hfill\llap
+    {%
+      \ifblank{#1}%
+        {(initially~empty)}%
+        {Default:~\code{#1}}%
+    }%
+  \newline
+}
+\usepackage{marginnote,ragged2e}
+\makeatletter
+\providecommand*\sinceversion[1]{%
+  \@bsphack
+  \marginnote{%
+    \footnotesize\sffamily\RaggedRight
+    \textcolor{black!75}{Introduced in version~#1}}%
+  \@esphack}
+\providecommand*\changedversion[1]{%
+  \@bsphack
+  \marginnote{%
+    \footnotesize\sffamily\RaggedRight
+    \textcolor{black!75}{Changed in version~#1}}%
+  \@esphack}
+\makeatother
 
 \begin{document}
 \RBCsetup{breve-version=musixtex}
@@ -208,10 +204,13 @@ hidden symbols for the creation of chord symbols is offered.
 The options follow a key/value system like in many other \LaTeX\ packages.
 
 \section{The Fonts}
-Now first let's take a look at the fonts. You can get them at \url{http://notation.jochenpietsch.de/}.
-They are placed under the Creative Commons Attribution-Noncommercial-Share Alike
-3.0 Unported License \ccbyncsaeu. Jochen Pietsch who designed the fonts says there that he
-doesn't develop the fonts any further so we have to live with any shortcomings:
+Now first let's take a look at the fonts. You can get them\footnote{Just in case
+the website isn't reachable any more or the fonts are no longer distributed
+there you can also get a copy from me. In this case just send me an email.}
+at \url{http://notation.jochenpietsch.de/}. They are placed under the Creative
+Commons Attribution-Noncommercial-Share Alike~3.0 Unported License \ccbyncsaeu.
+Jochen Pietsch who designed the fonts says there that he doesn't develop the fonts
+any further so we have to live with any shortcomings:
 
 \begin{zitat}[Jochen Pietsch]
  Please note, these fonts are still in beta-stage, so you might note some missing
@@ -232,7 +231,8 @@ one is defined by \realbookchords.
 
 The package provides this font family switch:
 \begin{beschreibung}
- \befehl{NewRealBookChords} activate the font family \enquote{New Real Book Chords}
+ \Befehl{NewRealBookChords}\newline
+   activate the font family \enquote{New Real Book Chords}
 \end{beschreibung}
 
 \subsection{New Real Book Chords}
@@ -276,7 +276,7 @@ I'll first have to be able to buy the font and experiment with it a bit.
 It's time to get to the important stuff: the chords. To typeset them there is one
 basic command:
 \begin{beschreibung}
- \befehl{rbc}[<options>]{<chord specs>}
+ \Befehl{rbc}[<options>]{<chord specs>}
 \end{beschreibung}
 The \ma{<chord specs>} will be explained in detail in the rest of the documentation.
 
@@ -302,8 +302,10 @@ are clear -- just insert the intervall number:
 Often enough one needs alterated extensions. \realbookchords defines two macros
 to access the characters \rbc{\b} and \rbc{\k} easily:
 \begin{beschreibung}
- \befehl{b} minor/diminished extension
- \befehl{k} major/augmented extension
+ \Befehl{b}\newline
+   minor/diminished extension
+ \Befehl{k}\newline
+   major/augmented extension
 \end{beschreibung}
  Let's see them in action:
 \begin{beispiel}
@@ -318,7 +320,8 @@ Since they're not all available as single characters, \realbookchords fakes the
 missing ones. This results in inconsistent looks. That's why \realbookchords
 provides an option so that all six are faked:
 \begin{beschreibung}
- \option{use-fake-symbols}{\default{true}/false} switch between original characters and faked ones. Default = \code{false}
+ \Option{use-fake-symbols}{\default{true}|false}\Default{false}
+   switch between original characters and faked ones.
 \end{beschreibung}
 \begin{beispiel}
  \RBCsetup{use-fake-symbols}
@@ -330,16 +333,21 @@ Sometimes more than one alterated extension needs to be indicated. The
 \enquote{New Real Book Chords} font provides a number of characters for this
 purpose. \realbookchords provides five macros to access them easily:
 \begin{beschreibung}
- \befehl{bb}{<intervalls>} \verb=\rbc{\bb{13,9}}= \rbc{\bb{13,9}}
- \befehl{bk}{<intervalls>} \verb=\rbc{\bk{13,9}}= \rbc{\bk{13,9}}
- \befehl{kb}{<intervalls>} \verb=\rbc{\kb{13,9}}= \rbc{\kb{13,9}}
- \befehl{kk}{<intervalls>} \verb=\rbc{\kk{13,9}}= \rbc{\kk{13,9}}
- \befehl{dt}[<alterations>]{<intervalls>} \verb=\dt[bb]{13,9}= \dt[bb]{13,9}
+ \Befehl{bb}{<intervalls>}\newline
+   \verb=\rbc{\bb{13,9}}= \rbc{\bb{13,9}}
+ \Befehl{bk}{<intervalls>}\newline
+   \verb=\rbc{\bk{13,9}}= \rbc{\bk{13,9}}
+ \Befehl{kb}{<intervalls>}\newline
+   \verb=\rbc{\kb{13,9}}= \rbc{\kb{13,9}}
+ \Befehl{kk}{<intervalls>}\newline
+   \verb=\rbc{\kk{13,9}}= \rbc{\kk{13,9}}
+ \Befehl{dt}[<alterations>]{<intervalls>}\newline
+   \verb=\dt[bb]{13,9}= \dt[bb]{13,9}
 \end{beschreibung}
-There are four different combinations of alterations. For each there is a macros.
+There are four different combinations of alterations. For each there is a macro.
 The fifth macro also provides a possibility to access to the for combinations but
 also enables to only alterate only one of the two extensions. Unlike the first
-four macros \cmd{dt} is \emph{not only inside} \cmd{rbc} defined butr can also be
+four macros \cmd{dt} is \emph{not only inside} \cmd{rbc} defined but can also be
 used in normal text.
 
 All possible \oa{<alterations>} are shown below:
@@ -352,8 +360,10 @@ combination is present as a character like for example \rbc[double-extensions-br
 then the character is used else it is faked: \rbc[double-extensions-brackets=false]{\dt{9,6}}
 
 \begin{beschreibung}
- \option{fake-double-extensions}{\default{true}/false} when \code{true} \emph{all} double extension numbers are faked. Default = \code{false}
- \option{double-extensions-brackets}{\default{true}/false} enclose the double extensions in brackets or not. Default = \code{false}
+ \Option{fake-double-extensions}{\default{true}|false}\Default{false}
+   when \code{true} \emph{all} double extension numbers are faked.
+ \Option{double-extensions-brackets}{\default{true}|false}\Default{false}
+   enclose the double extensions in brackets or not.
 \end{beschreibung}
 There is a shortcut for the \key{double-extensions-brackets} option: \cmd[rbca]{rbc*}. The brackets can also be set explicitly using \code{[} and \code{]}.
 \begin{beispiel}
@@ -378,7 +388,8 @@ presented earlier:
 
 You can also use the following option:
 \begin{beschreibung}
- \option{parse}{\default{true}/false} switch off the parsing. Default = \code{true}
+ \Option{parse}{\default{true}|false}\Default{true}
+   switch off the parsing.
 \end{beschreibung}
 \begin{beispiel}
  \texttt{parse=true}: \rbc{Ama7(omit3) [major]} \\
@@ -387,21 +398,34 @@ You can also use the following option:
 
 \section{Song Titles}
 \begin{beschreibung}
- \Befehl{SongTitle}[<left>]{<center>}\oa{<right} \cnpkgdocarrow
- \option{songtitle-format-left}{<code>} Default = \verb=\NewRealBookChords\footnotesize=
- \option{songtitle-format-center}{<code>} Default = \verb=\NewRealBookChords\Large\centering=
- \option{songtitle-format-right}{<code>} Default = \verb=\NewRealBookChords\footnotesize=
- \option{songtitle-pos-left}{l/c/r} Default = \code{l}
- \option{songtitle-pos-right}{l/c/r} Default = \code{l}
+ \Befehl{SongTitle}[<left>]{<center>}\oa{<right}
+ \Option{songtitle-format-left}{<code>}\Default{\cmd*{NewRealBookChords}\cmd*{footnotesize}}
+ \Option{songtitle-format-center}{<code>}\Default{\cmd*{NewRealBookChords}\cmd*{Large}\cmd*{centering}}
+ \Option{songtitle-format-right}{<code>}\Default{\cmd*{NewRealBookChords}\cmd*{footnotesize}}
+ \Option{songtitle-pos-left}{l|c|r}\Default{l}
+ \Option{songtitle-pos-right}{l|c|r}\Default{l}
 \end{beschreibung}
 
-\begin{beispiel}
+\begin{beispiel}[code only]
  \SongTitle{Begin The Beguine}
+ \par\vskip\baselineskip
  \SongTitle[Medium Swing Tempo]{Begin The Beguine}
+ \par\vskip\baselineskip
  \SongTitle{Begin The Beguine}[Cole Porter\\arr.: Jerry Sears]
+ \par\vskip\baselineskip 
  \RBCsetup{songtitle-pos-right=r}
  \SongTitle{Begin The Beguine}[Cole Porter\\arr.: Jerry Sears]
 \end{beispiel}
+\begingroup
+ \SongTitle{Begin The Beguine}
+ \par\vskip\baselineskip
+ \SongTitle[Medium Swing Tempo]{Begin The Beguine}
+ \par\vskip\baselineskip
+ \SongTitle{Begin The Beguine}[Cole Porter\\arr.: Jerry Sears]
+ \par\vskip\baselineskip 
+ \RBCsetup{songtitle-pos-right=r}
+ \SongTitle{Begin The Beguine}[Cole Porter\\arr.: Jerry Sears]
+\endgroup
 
 \section{See it in Action}
 Let's use the \cmd{rbc} command together with \paket{musixtex} for a real example.
@@ -425,7 +449,7 @@ You can do something like the following to get them to work together:
 \end{beispiel}
 
 Or -- even easier -- load \realbookchords with the \key{load-musixtex} option and
-let it handle things.
+let it handle things. However, this doesn't always work as expected, yet.
 \begin{beispiel}[code only]
  \documentclass{article}
  \usepackage[load-musixtex]{realbookchords}
@@ -440,15 +464,19 @@ If you use this option \realbookchords loads \paket{musixtex} and sets \cmd{brev
 to the meaning of \paket{fontspec}. You have the possibility to access \paket{musixtex}'s
 version:
 \begin{beschreibung}
- \befehl{musixtexbreve} \paket{musixtex}'s original definition.
- \befehl{fontspecbreve} \paket{fontspec}'s original definition.
- \option{breve-version}{fontspec/musixtex} sets \cmd{breve} to the definition of the specified
- package.
- \befehl{musixtexaddspace} \realbookchords undefines \paket{musixtex}'s \cmd{addspace}
- but stores the definition in \cmd{musixtexaddspace}. You'll probably need to
- restore \paket{musixtex}'s definition. If you don't use \paket{biblatex} in the
- same document there shouldn't be a problem.
- \option{addspace-version}{musixtex} restores \paket{musixtex}'s definition.
+ \Befehl{musixtexbreve}\newline
+   \paket{musixtex}'s original definition.
+ \Befehl{fontspecbreve}\newline
+   \paket{fontspec}'s original definition.
+ \Option{breve-version}{fontspec|musixtex}\newline
+   sets \cmd{breve} to the definition of the specified package.
+ \Befehl{musixtexaddspace}\newline
+   \realbookchords undefines \paket{musixtex}'s \cmd{addspace} but stores the
+   definition in \cmd{musixtexaddspace}. You'll probably need to restore
+   \paket{musixtex}'s definition. If you don't use \paket{biblatex} in the
+   same document there shouldn't be a problem.
+ \Option{addspace-version}{musixtex}\newline
+   restores \paket{musixtex}'s definition.
 \end{beschreibung}
 
 Let's take the first eight bars of Kenny Durham's \enquote{Blue Bossa} as an example:
@@ -532,8 +560,9 @@ Let's take the first eight bars of Kenny Durham's \enquote{Blue Bossa} as an exa
 
 \printbibliography
 
-\setindexpreamble{Section titles are indicated \textbf{bold}, packages
+\indexprologue{\noindent Section titles are indicated \textbf{bold}, packages
 \textsf{sans serif}, commands \code{\textbackslash\textcolor{code}{brown}}
  and options \textcolor{key}{\code{yellow}}.\par\bigskip}
 \printindex
+
 \end{document}
