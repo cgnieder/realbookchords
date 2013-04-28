@@ -55,13 +55,13 @@
 \tl_new:N \l__rbc_tmpb_tl
 
 % Options:
-\bool_new:N \l__rbc_tensions_brackets_bool
+\bool_new:N      \l__rbc_tensions_brackets_bool
 \bool_set_true:N \l__rbc_tensions_brackets_bool
-\bool_new:N \l__rbc_fake_symbols_bool
-\bool_new:N \l__rbc_parse_chord_bool
+\bool_new:N      \l__rbc_fake_symbols_bool
+\bool_new:N      \l__rbc_parse_chord_bool
 \bool_set_true:N \l__rbc_parse_chord_bool
-\bool_new:N \l__rbc_fake_double_numbers_bool
-\bool_new:N \l__rbc_load_musixtex_bool
+\bool_new:N      \l__rbc_fake_double_numbers_bool
+\bool_new:N      \l__rbc_load_musixtex_bool
 
 \keys_define:nn { rbc }
   {
@@ -86,15 +86,15 @@
   }
 
 % double tensions
-\cs_new_nopar:Npn \rbc_bb:n #1 { \rbc_read_double_tensions:nn { bb } { #1 } }
-\cs_new_nopar:Npn \rbc_kk:n #1 { \rbc_read_double_tensions:nn { kk } { #1 } }
-\cs_new_nopar:Npn \rbc_bk:n #1 { \rbc_read_double_tensions:nn { bk } { #1 } }
-\cs_new_nopar:Npn \rbc_kb:n #1 { \rbc_read_double_tensions:nn { kb } { #1 } }
+\cs_new:Npn \rbc_bb:n #1 { \rbc_read_double_tensions:nn { bb } { #1 } }
+\cs_new:Npn \rbc_kk:n #1 { \rbc_read_double_tensions:nn { kk } { #1 } }
+\cs_new:Npn \rbc_bk:n #1 { \rbc_read_double_tensions:nn { bk } { #1 } }
+\cs_new:Npn \rbc_kb:n #1 { \rbc_read_double_tensions:nn { kb } { #1 } }
 
-\cs_new_nopar:Npn \rbc_b: { ß }
-\cs_new_nopar:Npn \rbc_k: { ? }
+\cs_new:Npn \rbc_b: { ß }
+\cs_new:Npn \rbc_k: { ? }
 
-\prop_new:N \l__rbc_double_tensions_signs_prop
+\prop_new:N   \l__rbc_double_tensions_signs_prop
 \prop_put:Nnn \l__rbc_double_tensions_signs_prop { bb } { \'{a} }
 \prop_put:Nnn \l__rbc_double_tensions_signs_prop { kk } { \aa{} }
 \prop_put:Nnn \l__rbc_double_tensions_signs_prop { bk } { \"{a} }
@@ -104,7 +104,7 @@
 \prop_put:Nnn \l__rbc_double_tensions_signs_prop { b  } { \`{a} }
 \prop_put:Nnn \l__rbc_double_tensions_signs_prop { k  } { \~{a} }
 
-\prop_new:N \l__rbc_double_tensions_numbers_prop
+\prop_new:N   \l__rbc_double_tensions_numbers_prop
 \prop_put:Nnn \l__rbc_double_tensions_numbers_prop { 5,5 }   { \`{A} }
 \prop_put:Nnn \l__rbc_double_tensions_numbers_prop { 9,5 }   { \'{A} }
 \prop_put:Nnn \l__rbc_double_tensions_numbers_prop { 11,5 }  { \^{A} }
@@ -170,7 +170,7 @@
 \cs_generate_variant:Nn \tl_replace_all:Nnn { NV }
 
 % bass notes:
-\cs_new_nopar:Npn \rbc_bass_note:n #1
+\cs_new:Npn \rbc_bass_note:n #1
   { / \box_move_down:nn { 1.25ex } { \hbox:n { \addfontfeatures { Scale=.75 } #1 } } }
 
 \cs_new_protected:Npn \rbc_is_bass:
@@ -194,17 +194,22 @@
       { \peek_meaning:NTF > { \tex_kern:D -.4ex } }
   }
 
+\group_begin:
+\char_set_catcode_letter:N \@
+\cs_gset:Npn \rbc_fake_add: { @ }
+\group_end:
+
 % symbols; strings to be replaced when parse=true
-\prop_new:N \l__rbc_symbols_prop
+\prop_new:N   \l__rbc_symbols_prop
 \prop_put:Nnn \l__rbc_symbols_prop { omit } { \rbc_fake_symbol:nn { omit } { ; } }
 \prop_put:Nnn \l__rbc_symbols_prop { dim }  { \rbc_fake_symbol:nn { dim. } { \_ } }
-\prop_put:Nnn \l__rbc_symbols_prop { maj }  { \rbc_fake_symbol:nn { maj } { } }
+\prop_put:Nnn \l__rbc_symbols_prop { maj }  { \rbc_fake_symbol:nn { maj  } { } }
 \prop_put:Nnn \l__rbc_symbols_prop { ma }   { < }
 \prop_put:Nnn \l__rbc_symbols_prop { mi }   { > }
 \prop_put:Nnn \l__rbc_symbols_prop { alt }  { \rbc_fake_symbol:nn { alt. } { } }
-\prop_put:Nnn \l__rbc_symbols_prop { sus }  { \rbc_fake_symbol:nn { sus } { } }
-\prop_put:Nnn \l__rbc_symbols_prop { add }  { \rbc_fake_symbol:nn { add } { \makeatletter @\makeatother } }
-\prop_put:Nnn \l__rbc_symbols_prop { b }    { b \__rbc_peek_mima: }
+\prop_put:Nnn \l__rbc_symbols_prop { sus }  { \rbc_fake_symbol:nn { sus  } { } }
+\prop_put:Nnn \l__rbc_symbols_prop { add }  { \rbc_fake_symbol:nn { add  } { \rbc_fake_add: } }
+\prop_put:Nnn \l__rbc_symbols_prop { b }    { b  \__rbc_peek_mima: }
 \prop_put:Nnn \l__rbc_symbols_prop { \# }   { \# \__rbc_peek_mima: }
 \prop_put:Nnn \l__rbc_symbols_prop { * }    { * }
 \prop_put:Nnn \l__rbc_symbols_prop { \k }   { ? }
@@ -213,8 +218,8 @@
 \prop_put:Nnn \l__rbc_symbols_prop { / }    { \rbc_bass_note:n }
 \prop_put:Nnn \l__rbc_symbols_prop { + }    { + }
 \prop_put:Nnn \l__rbc_symbols_prop { - }    { - }
-\prop_put:Nnn \l__rbc_symbols_prop { ° }    { \textordmasculine}
-\prop_put:Nnn \l__rbc_symbols_prop { \dim } { \textordmasculine}
+\prop_put:Nnn \l__rbc_symbols_prop { ° }    { \textordmasculine }
+\prop_put:Nnn \l__rbc_symbols_prop { \dim } { \textordmasculine }
 \prop_put:Nnn \l__rbc_symbols_prop { ( }    { ( }
 \prop_put:Nnn \l__rbc_symbols_prop { ) }    { ) }
 \prop_put:Nnn \l__rbc_symbols_prop { 0 }    { 0 \rbc_is_bass: }
@@ -229,6 +234,7 @@
 \prop_put:Nnn \l__rbc_symbols_prop { 9 }    { 9 \rbc_is_bass: }
 
 % user commands:
+% the chords:
 \NewDocumentCommand \rbc { som }
   {
     \group_begin:
@@ -240,6 +246,7 @@
     \group_end:
   }
 
+% double extensions:
 \NewDocumentCommand \dt { om }
   {
     \group_begin:
@@ -249,15 +256,18 @@
   }
 
 % song titles:
-\tl_new:N \l__rbc_songtitle_format_left_tl
-\tl_set:Nn \l__rbc_songtitle_format_left_tl { \NewRealBookChords\footnotesize }
-\tl_new:N \l__rbc_songtitle_format_center_tl
-\tl_set:Nn \l__rbc_songtitle_format_center_tl { \NewRealBookChords\Large\centering }
-\tl_new:N \l__rbc_songtitle_format_right_tl
-\tl_set:Nn \l__rbc_songtitle_format_right_tl { \NewRealBookChords\footnotesize }
-\tl_new:N \l__rbc_songtitle_position_left_tl
+\tl_new:N  \l__rbc_songtitle_format_left_tl
+\tl_set:Nn \l__rbc_songtitle_format_left_tl
+  { \NewRealBookChords\footnotesize }
+\tl_new:N  \l__rbc_songtitle_format_center_tl
+\tl_set:Nn \l__rbc_songtitle_format_center_tl
+  { \NewRealBookChords\Large\centering }
+\tl_new:N  \l__rbc_songtitle_format_right_tl
+\tl_set:Nn \l__rbc_songtitle_format_right_tl
+  { \NewRealBookChords\footnotesize }
+\tl_new:N  \l__rbc_songtitle_position_left_tl
 \tl_set:Nn \l__rbc_songtitle_position_left_tl { l }
-\tl_new:N \l__rbc_songtitle_position_right_tl
+\tl_new:N  \l__rbc_songtitle_position_right_tl
 \tl_set:Nn \l__rbc_songtitle_position_right_tl { l }
 
 \keys_define:nn { rbc }
@@ -273,7 +283,7 @@
   {
     \IfNoValueF { #1 }
       {
-        \rlap
+        \hbox_overlap_right:n
           {
             \tl_use:N \l__rbc_songtitle_format_left_tl
             \tabular { @{} \l__rbc_songtitle_position_left_tl } #1 \endtabular
@@ -283,7 +293,7 @@
       { \tl_use:N \l__rbc_songtitle_format_center_tl #2 }
     \IfNoValueF { #3 }
       {
-        \llap
+        \hbox_overlap_left:n
           {
             \tl_use:N \l__rbc_songtitle_format_right_tl
             \tabular { @{} \l__rbc_songtitle_position_right_tl } #3 \endtabular
@@ -325,3 +335,5 @@
   }
 
 \tex_endinput:D
+
+2013/04/25 v 0.1beta-a  - minor adjustments

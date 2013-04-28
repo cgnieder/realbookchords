@@ -397,15 +397,23 @@ You can also use the following option:
 \end{beispiel}
 
 \section{Song Titles}
+% TODO Optionen beschreiben
 \begin{beschreibung}
- \Befehl{SongTitle}[<left>]{<center>}\oa{<right}
+ \Befehl{SongTitle}[<left>]{<center>}\oa{<right}\newline
+   A centered title with options to put text to the left and the right of it.
  \Option{songtitle-format-left}{<code>}\Default{\cmd*{NewRealBookChords}\cmd*{footnotesize}}
+   Format of the text to the left.
  \Option{songtitle-format-center}{<code>}\Default{\cmd*{NewRealBookChords}\cmd*{Large}\cmd*{centering}}
+   Format of the text in the center.
  \Option{songtitle-format-right}{<code>}\Default{\cmd*{NewRealBookChords}\cmd*{footnotesize}}
+   Format of the text to the right.
  \Option{songtitle-pos-left}{l|c|r}\Default{l}
+   Alignment of the text to the left.
  \Option{songtitle-pos-right}{l|c|r}\Default{l}
+   Alignment of the text to the right.
 \end{beschreibung}
 
+As an example: the following code \ldots
 \begin{beispiel}[code only]
  \SongTitle{Begin The Beguine}
  \par\vskip\baselineskip
@@ -416,6 +424,8 @@ You can also use the following option:
  \RBCsetup{songtitle-pos-right=r}
  \SongTitle{Begin The Beguine}[Cole Porter\\arr.: Jerry Sears]
 \end{beispiel}
+\ldots{} produces this:
+
 \begingroup
  \SongTitle{Begin The Beguine}
  \par\vskip\baselineskip
@@ -430,7 +440,7 @@ You can also use the following option:
 \section{See it in Action}
 Let's use the \cmd{rbc} command together with \paket{musixtex} for a real example.
 Both \paket{fontspec} which is loaded be \realbookchords and \paket{musixtex}
-define the command \cmd{breve}. The definition of \paket{fontspec} takes place
+define the command \cmd{breve}. The definition by \paket{fontspec} takes place
 \verb=\AtBeginDocument=.
 
 A similar problem arises when \paket{musixtex} is used together with \paket{biblatex}:
@@ -519,7 +529,6 @@ Let's take the first eight bars of Kenny Durham's \enquote{Blue Bossa} as an exa
 \end{music}
 \end{beispiel}
 
-\newpage
 \begin{music}
  \let\addspace\musixtexaddspace
  \parindent0pt \generalmeter{\meterfrac44}\setsign{1}{-3}\nobarnumbers
@@ -559,6 +568,9 @@ Let's take the first eight bars of Kenny Durham's \enquote{Blue Bossa} as an exa
 \appendix
 
 \printbibliography
+
+\addsec{Implementation}
+\implementation[linerange={35-1000},firstnumber=35]
 
 \indexprologue{\noindent Section titles are indicated \textbf{bold}, packages
 \textsf{sans serif}, commands \code{\textbackslash\textcolor{code}{brown}}
