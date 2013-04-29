@@ -289,7 +289,7 @@ Note that this is nearly but not exactly the same as using the font directly:
 \begin{beispiel}
  \NewRealBookChords Ab9 Cmi E+ Gma9 F\#mi9 Db13
 \end{beispiel}
-The font provides the characters \rbc{>} and \rbc{<}. \cmd{jc} replaces the strings
+The font provides the characters \rbc{>} and \rbc{<}. \cmd{rbc} replaces the strings
 \code{mi} and \code{ma} with them. You have also seen that a \code{b} gives \rbc{b}
 for a flat root and \verb+\#+ gives \rbc{\#} for a sharp root.
 
@@ -299,22 +299,29 @@ are clear -- just insert the intervall number:
 \begin{beispiel}
  \rbc{G7} \rbc{A9} \rbc {F11} \rbc{E13} \rbc{B7+}
 \end{beispiel}
-Often enough one needs alterated extensions. \realbookchords defines two macros
+Often enough one needs alterated extensions. \realbookchords defines macros
 to access the characters \rbc{\b} and \rbc{\k} easily:
 \begin{beschreibung}
- \Befehl{b}\newline
+ \Befehl{b} \rbc{\b}\newline
    minor/diminished extension
- \Befehl{k}\newline
+ \Befehl{f}\newline
+   alias for \cmd{b}
+ \Befehl{k} \rbc{\k}\newline
    major/augmented extension
+ \Befehl{s}\newline
+   alias for \cmd{k}
 \end{beschreibung}
- Let's see them in action:
+Note that these macros are only valid inside \cmd{rbc} so that the usual
+meaning of, \textit{e.g.}, \cmd{b} still holds outside. Now let's see them in
+action:
 \begin{beispiel}
   \rbc{Fmi7(\b5)} \rbc{G7(\k9)} \rbc{Eb7(\b9)} \rbc{Db9(\k11)} \rbc{Cmi7(5-)}
 \end{beispiel}
 
-There are also six \enquote{extension descriptions}:
+There are also some \enquote{extension descriptions}:
 \begin{beispiel}
- \rbc{Cmaj9} \rbc{Bbadd9} \rbc{Gsus4} \rbc{Ealt} \rbc{F7omit3} \rbc{D\#dim} \\
+ \rbc{Cmaj9} \rbc{Bbadd9} \rbc{Absus4} \rbc{Galt} \rbc{F7omit3} \rbc{E\#dim}
+ \rbc{Daug}
 \end{beispiel}
 Since they're not all available as single characters, \realbookchords fakes the
 missing ones. This results in inconsistent looks. That's why \realbookchords
@@ -325,7 +332,8 @@ provides an option so that all six are faked:
 \end{beschreibung}
 \begin{beispiel}
  \RBCsetup{use-fake-symbols}
- \rbc{Cmaj9} \rbc{Bbadd9} \rbc{Gsus4} \rbc{Ealt} \rbc{F7omit3} \rbc{D\#dim}
+ \rbc{Cmaj9} \rbc{Bbadd9} \rbc{Absus4} \rbc{Galt} \rbc{F7omit3} \rbc{E\#dim}
+ \rbc{Daug}
 \end{beispiel}
 
 \subsection{Double Extensions}
@@ -335,16 +343,30 @@ purpose. \realbookchords provides five macros to access them easily:
 \begin{beschreibung}
  \Befehl{bb}{<intervalls>}\newline
    \verb=\rbc{\bb{13,9}}= \rbc{\bb{13,9}}
+ \Befehl{ff}\newline
+   alias for \cmd{bb}
  \Befehl{bk}{<intervalls>}\newline
    \verb=\rbc{\bk{13,9}}= \rbc{\bk{13,9}}
+ \Befehl{fs}\newline
+   alias for \cmd{bk}
+ \Befehl{bs}\newline
+   alias for \cmd{bk}
  \Befehl{kb}{<intervalls>}\newline
    \verb=\rbc{\kb{13,9}}= \rbc{\kb{13,9}}
+ \Befehl{sf}\newline
+   alias for \cmd{kb}
+ \Befehl{sb}\newline
+   alias for \cmd{kb}
  \Befehl{kk}{<intervalls>}\newline
    \verb=\rbc{\kk{13,9}}= \rbc{\kk{13,9}}
+ \Befehl{ss}\newline
+   alias for \cmd{kk}
  \Befehl{dt}[<alterations>]{<intervalls>}\newline
    \verb=\dt[bb]{13,9}= \dt[bb]{13,9}
 \end{beschreibung}
-There are four different combinations of alterations. For each there is a macro.
+There are four different combinations of alterations. For each there is a macro,
+for some of these there are also aliases since “k” (German: “Kreuz”) may not be
+the natural choice for everyone.
 The fifth macro also provides a possibility to access to the for combinations but
 also enables to only alterate only one of the two extensions. Unlike the first
 four macros \cmd{dt} is \emph{not only inside} \cmd{rbc} defined but can also be
@@ -352,7 +374,16 @@ used in normal text.
 
 All possible \oa{<alterations>} are shown below:
 \begin{beispiel}
- \dt{13,9} \dt[bb]{13,9} \dt[bk]{13,9} \dt[kb]{13,9} \dt[kk]{13,9} \dt[B]{13,9} \dt[K]{13,9} \dt[b]{13,9} \dt[k]{13,9}
+ \dt{13,9} \dt[bb]{13,9} \dt[bk]{13,9} \dt[kb]{13,9} \dt[kk]{13,9}
+ \dt[B]{13,9} \dt[K]{13,9} \dt[b]{13,9} \dt[k]{13,9}
+ 
+ % second possible representation:
+ \dt{13,9} \dt[ff]{13,9} \dt[fs]{13,9} \dt[sf]{13,9} \dt[ss]{13,9}
+ \dt[F]{13,9} \dt[S]{13,9} \dt[f]{13,9} \dt[s]{13,9}
+ 
+  % third possible representation:
+ \dt{13,9} \dt[bb]{13,9} \dt[bs]{13,9} \dt[sb]{13,9} \dt[ss]{13,9}
+ \dt[B]{13,9} \dt[S]{13,9} \dt[b]{13,9} \dt[s]{13,9}
 \end{beispiel}
 
 The intervall numbers for both extensions are given seperated with a comma. If the

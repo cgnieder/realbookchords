@@ -1,9 +1,8 @@
 % --------------------------------------------------------------------------
-% the REALBOOKCHORDS package v 0.1beta-a
+% the REALBOOKCHORDS package
 % 
 %   Typesetting jazz chords with the `Real Book' way
 % 
-% 2013/04/25
 % --------------------------------------------------------------------------
 % Clemens Niederberger
 % Web:    https://bitbucket.org/cgnieder/realbookchords/
@@ -35,8 +34,8 @@
 \RequirePackage{expl3}[2012/03/03]
 \ProvidesExplPackage
   {realbookchords}
-  {2013/04/25}
-  {0.1beta-a}
+  {2013/04/29}
+  {0.1}
   {Typesetting jazz chords the `Real Book' way}
 
 \msg_new:nnnn { realbookchords } { wrong-engine }
@@ -96,13 +95,23 @@
 
 \prop_new:N   \l__rbc_double_tensions_signs_prop
 \prop_put:Nnn \l__rbc_double_tensions_signs_prop { bb } { \'{a} }
+\prop_put:Nnn \l__rbc_double_tensions_signs_prop { ff } { \'{a} }
 \prop_put:Nnn \l__rbc_double_tensions_signs_prop { kk } { \aa{} }
+\prop_put:Nnn \l__rbc_double_tensions_signs_prop { ss } { \aa{} }
 \prop_put:Nnn \l__rbc_double_tensions_signs_prop { bk } { \"{a} }
+\prop_put:Nnn \l__rbc_double_tensions_signs_prop { fs } { \"{a} }
+\prop_put:Nnn \l__rbc_double_tensions_signs_prop { bs } { \"{a} }
 \prop_put:Nnn \l__rbc_double_tensions_signs_prop { kb } { \^{a} }
+\prop_put:Nnn \l__rbc_double_tensions_signs_prop { sf } { \^{a} }
+\prop_put:Nnn \l__rbc_double_tensions_signs_prop { sb } { \^{a} }
 \prop_put:Nnn \l__rbc_double_tensions_signs_prop { B  } { \rbc_b: }
+\prop_put:Nnn \l__rbc_double_tensions_signs_prop { F  } { \rbc_b: }
 \prop_put:Nnn \l__rbc_double_tensions_signs_prop { K  } { \rbc_k: }
+\prop_put:Nnn \l__rbc_double_tensions_signs_prop { S  } { \rbc_k: }
 \prop_put:Nnn \l__rbc_double_tensions_signs_prop { b  } { \`{a} }
+\prop_put:Nnn \l__rbc_double_tensions_signs_prop { f  } { \`{a} }
 \prop_put:Nnn \l__rbc_double_tensions_signs_prop { k  } { \~{a} }
+\prop_put:Nnn \l__rbc_double_tensions_signs_prop { s  } { \~{a} }
 
 \prop_new:N   \l__rbc_double_tensions_numbers_prop
 \prop_put:Nnn \l__rbc_double_tensions_numbers_prop { 5,5 }   { \`{A} }
@@ -152,16 +161,24 @@
   {
     \group_begin:
       \cs_set_eq:NN \bb \rbc_bb:n
+      \cs_set_eq:NN \ff \rbc_bb:n
       \cs_set_eq:NN \bk \rbc_bk:n
+      \cs_set_eq:NN \fs \rbc_bk:n
+      \cs_set_eq:NN \bs \rbc_bk:n
       \cs_set_eq:NN \kb \rbc_kb:n
+      \cs_set_eq:NN \sf \rbc_kb:n
+      \cs_set_eq:NN \sb \rbc_kb:n
       \cs_set_eq:NN \kk \rbc_kk:n
+      \cs_set_eq:NN \ss \rbc_kk:n
       \cs_set_eq:NN \dt \rbc_dt:w
       \cs_set_eq:NN \b  \rbc_b:
+      \cs_set_eq:NN \f  \rbc_b:
       \cs_set_eq:NN \k  \rbc_k:
+      \cs_set_eq:NN \s  \rbc_k:
       \tl_set:Nn \l__rbc_tmpa_tl { #1 }
       \prop_map_inline:Nn \l__rbc_symbols_prop
         {
-          \tl_set_rescan:Nnn \l__rbc_tmpb_tl { } { ##1 }
+          \tl_set_rescan:Nnn  \l__rbc_tmpb_tl { } { ##1 }
           \tl_replace_all:NVn \l__rbc_tmpa_tl { \l__rbc_tmpb_tl } { ##2 }
         }
       \NewRealBookChords \tl_use:N \l__rbc_tmpa_tl
@@ -196,7 +213,7 @@
 
 \group_begin:
 \char_set_catcode_letter:N \@
-\cs_gset:Npn \rbc_fake_add: { @ }
+\cs_gset:Npn \rbc_real_add: { @ }
 \group_end:
 
 % symbols; strings to be replaced when parse=true
@@ -208,12 +225,15 @@
 \prop_put:Nnn \l__rbc_symbols_prop { mi }   { > }
 \prop_put:Nnn \l__rbc_symbols_prop { alt }  { \rbc_fake_symbol:nn { alt. } { } }
 \prop_put:Nnn \l__rbc_symbols_prop { sus }  { \rbc_fake_symbol:nn { sus  } { } }
-\prop_put:Nnn \l__rbc_symbols_prop { add }  { \rbc_fake_symbol:nn { add  } { \rbc_fake_add: } }
+\prop_put:Nnn \l__rbc_symbols_prop { add }  { \rbc_fake_symbol:nn { add  } { \rbc_real_add: } }
+\prop_put:Nnn \l__rbc_symbols_prop { aug }  { \rbc_fake_symbol:nn { aug  } { } }
 \prop_put:Nnn \l__rbc_symbols_prop { b }    { b  \__rbc_peek_mima: }
 \prop_put:Nnn \l__rbc_symbols_prop { \# }   { \# \__rbc_peek_mima: }
 \prop_put:Nnn \l__rbc_symbols_prop { * }    { * }
 \prop_put:Nnn \l__rbc_symbols_prop { \k }   { ? }
+\prop_put:Nnn \l__rbc_symbols_prop { \s }   { ? }
 \prop_put:Nnn \l__rbc_symbols_prop { \b }   { \b }
+\prop_put:Nnn \l__rbc_symbols_prop { \f }   { \b }
 \prop_put:Nnn \l__rbc_symbols_prop { 6/9 }  { \% }
 \prop_put:Nnn \l__rbc_symbols_prop { / }    { \rbc_bass_note:n }
 \prop_put:Nnn \l__rbc_symbols_prop { + }    { + }
@@ -337,3 +357,4 @@
 \tex_endinput:D
 
 2013/04/25 v 0.1beta-a  - minor adjustments
+2013/04/29 v 0.1        - added aliases f for b (flat) and s for k (sharp)
