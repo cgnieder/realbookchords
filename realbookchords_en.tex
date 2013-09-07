@@ -136,31 +136,6 @@
 
 \let\verb\lstinline
 
-\newcommand*\Default[1]{%
-  \hfill\llap
-    {%
-      \ifblank{#1}%
-        {(initially~empty)}%
-        {Default:~\code{#1}}%
-    }%
-  \newline
-}
-\usepackage{marginnote,ragged2e}
-\makeatletter
-\providecommand*\sinceversion[1]{%
-  \@bsphack
-  \marginnote{%
-    \footnotesize\sffamily\RaggedRight
-    \textcolor{black!75}{Introduced in version~#1}}%
-  \@esphack}
-\providecommand*\changedversion[1]{%
-  \@bsphack
-  \marginnote{%
-    \footnotesize\sffamily\RaggedRight
-    \textcolor{black!75}{Changed in version~#1}}%
-  \@esphack}
-\makeatother
-
 \begin{document}
 \RBCsetup{breve-version=musixtex}
 

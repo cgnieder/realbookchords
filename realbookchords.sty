@@ -34,8 +34,8 @@
 \RequirePackage{expl3}[2012/03/03]
 \ProvidesExplPackage
   {realbookchords}
-  {2013/04/29}
-  {0.1}
+  {2013/09/07}
+  {0.1a}
   {Typesetting jazz chords the `Real Book' way}
 
 \msg_new:nnnn { realbookchords } { wrong-engine }
@@ -301,6 +301,7 @@
 
 \NewDocumentCommand \SongTitle { omo }
   {
+    \noindent
     \IfNoValueF { #1 }
       {
         \hbox_overlap_right:n
@@ -309,8 +310,8 @@
             \tabular { @{} \l__rbc_songtitle_position_left_tl } #1 \endtabular
           }
       }
-    \parbox [ b ] { \dim_eval:n { \linewidth - \parindent } }
-      { \tl_use:N \l__rbc_songtitle_format_center_tl #2 }
+    \parbox [ b ] { \linewidth }
+      { \tl_use:N \l__rbc_songtitle_format_center_tl #2 \par }
     \IfNoValueF { #3 }
       {
         \hbox_overlap_left:n
@@ -319,6 +320,7 @@
             \tabular { @{} \l__rbc_songtitle_position_right_tl } #3 \endtabular
           }
       }
+    \@afterindentfalse\@afterheading
   }
 
 % setup
@@ -358,3 +360,4 @@
 
 2013/04/25 v 0.1beta-a  - minor adjustments
 2013/04/29 v 0.1        - added aliases f for b (flat) and s for k (sharp)
+2013/09/07 v 0.1a       - fixes in the definition of \SongTitle
