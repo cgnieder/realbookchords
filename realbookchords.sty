@@ -45,7 +45,7 @@
     Since~you're~using~something~different~I~will~abort!
   }
 
-\bool_if:nF { \xetex_if_engine_p: || \luatex_if_engine_p: }
+\bool_if:nF { \sys_if_engine_xetex_p: || \sys_if_engine_luatex_p: }
   { \msg_error:nn { realbookchords } { wrong-engine } \tex_endinput:D }
 
 \RequirePackage { xparse , l3keys2e }
@@ -90,7 +90,7 @@
 \cs_new:Npn \rbc_bk:n #1 { \rbc_read_double_tensions:nn { bk } { #1 } }
 \cs_new:Npn \rbc_kb:n #1 { \rbc_read_double_tensions:nn { kb } { #1 } }
 
-\cs_new:Npn \rbc_b: { ÃŸ }
+\cs_new:Npn \rbc_b: { ß }
 \cs_new:Npn \rbc_k: { ? }
 
 \prop_new:N   \l__rbc_double_tensions_signs_prop
@@ -238,7 +238,7 @@
 \prop_put:Nnn \l__rbc_symbols_prop { / }    { \rbc_bass_note:n }
 \prop_put:Nnn \l__rbc_symbols_prop { + }    { + }
 \prop_put:Nnn \l__rbc_symbols_prop { - }    { - }
-\prop_put:Nnn \l__rbc_symbols_prop { Â° }    { \textordmasculine }
+\prop_put:Nnn \l__rbc_symbols_prop { ° }    { \textordmasculine }
 \prop_put:Nnn \l__rbc_symbols_prop { \dim } { \textordmasculine }
 \prop_put:Nnn \l__rbc_symbols_prop { ( }    { ( }
 \prop_put:Nnn \l__rbc_symbols_prop { ) }    { ) }
