@@ -1,3 +1,4 @@
+% arara: lualatex: { action: nonstopmode }
 % --------------------------------------------------------------------------
 % the REALBOOKCHORDS package
 % 
@@ -25,50 +26,38 @@
 % If you have any ideas, questions, suggestions or bugs to report, please
 % feel free to contact me.
 % --------------------------------------------------------------------------
+\documentclass[load-preamble+]{cnltx-doc}
+
+\let\safeaddspace\addspace
+
 \let\rm\rmfamily
 \RequirePackage[load-musixtex]{realbookchords}
-\documentclass[toc=index,toc=bib]{cnpkgdoc}
-\docsetup{
-  pkg      = realbookchords ,
-  code-box = {
-    backgroundcolor  = gray!7!white ,
-    skipbelow        = .6\baselineskip plus .5ex minus .5ex ,
-    skipabove        = .6\baselineskip plus .5ex minus .5ex ,
-    roundcorner      = 3pt ,
-  }
-}
-\usepackage{polyglossia}
-\setmainlanguage{english}
-\usepackage[oldstyle,proportional]{libertine}
-\usepackage{libertinehologopatch}
 
-\setmonofont[Ligatures=TeX,Scale=MatchLowercase]{Bitstream Vera Sans Mono}
+\let\addspace\safeaddspace
 
-\usepackage{fnpct}
-\cnpkgcolors{
-  main   => cnpkgred ,
-  key    => yellow!40!brown ,
-  module => cnpkgblue ,
-  link   => black!90
+\setcnltx{
+  package  = {realbookchords} ,
+%  info     = {Typeset Acronyms and other Abbreviations} ,
+  authors  = Clemens Niederberger ,
+  email    = contact@mychemistry.eu ,
+  url      = https://bitbucket.org/cgnieder/realbookchords/ ,
+  add-cmds = {
+    NewRealBookChords, rbc, RBCsetup, dt, bb, bk, kb, kk, SongTitle, addspace
+  } ,
+  add-silent-cmds = {
+    RealBookTitle, RealBookChords, textordmasculine, mbreve, musixtexaddspace,
+    generalmeter, meterfrac, setsign, nobarnumbers, startpiece, afterruleskip,
+    NOtes, qa, en, doublebar, Uptext, qlp, Notes, ca, isluru, tslur, ha,
+    NOTEs, endpiece
+  } ,
+  index-setup = { level = \section , noclearpage }
 }
 
-\renewcommand*\othersectionlevelsformat[3]{%
-  \textcolor{main}{#3\autodot}\enskip}
-\renewcommand*\partformat{%
-  \textcolor{main}{\partname~\thepart\autodot}}
+% \usepackage{polyglossia}
+% \setmainlanguage{english}
+% \usepackage[oldstyle,proportional]{libertine}
 
-\addcmds{
-  addspace, afterruleskip, AtBeginDocument,
-  b, bar, bb, bk, breve,
-  ca, doublebar, dt, en, endpiece, fontspecbreve,
-  generalmeter, ha, hlp, isluru, k, kb, kk,
-  mbreve, meterfrac, musixtexaddspace, musixtexbreve,
-  newfontfamily, NewRealBookChords, nobarnumbers,
-  notes,Notes,NOtes,NOTes,NOTEs,
-  qlp,qu, rbc, RBCsetup, RealBookChords, RealBookTitle,
-  setsign, SongTitle, startpiece,
-  textordmasculine, tslur, Uptext
-}
+\setmonofont[Ligatures=TeX,Scale=MatchLowercase]{DejaVu Sans Mono}
 
 \newfontfamily\RealBookTitle{Real Book Title}
 \newfontfamily\RealBookChords{RealBook Chords}
@@ -76,7 +65,6 @@
 \usepackage{ccicons}
 \usepackage{csquotes}
 
-\usepackage[backend=biber,style=alphabetic]{biblatex}
 \addbibresource{\jobname.bib}
 
 \usepackage{filecontents}
@@ -107,47 +95,29 @@
 }
 \end{filecontents}
 
-\usepackage{imakeidx}
-\begin{filecontents*}{\jobname.ist}
- heading_prefix "{\\bfseries "
- heading_suffix "\\hfil}\\nopagebreak\n"
- headings_flag  1
- delim_0 "\\dotfill\\hyperpage{"
- delim_1 "\\dotfill\\hyperpage{"
- delim_2 "\\dotfill\\hyperpage{"
- delim_r "}\\textendash\\hyperpage{"
- delim_t "}"
- suffix_2p "\\nohyperpage{\\,f.}"
- suffix_3p "\\nohyperpage{\\,ff.}"
-\end{filecontents*}
-\indexsetup{othercode=\footnotesize}
-\makeindex[options={-s \jobname.ist},intoc,columns=3,columnsep=1em]
-
-\let\verb\lstinline
-
 \begin{document}
 \RBCsetup{breve-version=musixtex}
 
 \section{License and Requirements}
 
-\realbookchords is placed under the terms of the LaTeX Project Public License,
+\realbookchords\ is placed under the terms of the LaTeX Project Public License,
 version 1.3 or later (\url{http://www.latex-project.org/lppl.txt}).
 It has the status \enquote{maintained}.
 
-In order to function properly a rather up to date version of the \paket{l3kernel}
-is needed. \realbookchords also needs \paket*{xparse} (part of the \paket{l3packages}
-bundle) and \paket{fontspec} for proper font support.
+In order to function properly a rather up to date version of the \pkg{l3kernel}
+is needed. \realbookchords\ also needs \pkg*{xparse} (part of the \pkg{l3packages}
+bundle) and \pkg{fontspec} for proper font support.
 
-\realbookchords does not offer the fonts it uses. You need to install them on
+\realbookchords\ does not offer the fonts it uses. You need to install them on
 your system by yourself and then use this package with \hologo{XeLaTeX} or
 \hologo{LuaLaTeX} to be able to use its features.
 
 \section{About}
-On his website Jochen Pietsch offers three fonts \cite{web:pietsch:fonts} which
-mimic the styles of the famous The Real Book\footnote{The original illegal edition
-is no longer available, though. I am uncertain if the 6th edition still uses the
-same handwritten font.} \cite{book:realbook} and its successor The New Real Book
-\cite{book:newrealbook}:
+On his website Jochen Pietsch offered three fonts \cite{web:pietsch:fonts}
+which mimic the styles of the famous The Real Book\footnote{The original
+  illegal edition is no longer available, though. I am uncertain if the 6th
+  edition still uses the same handwritten font.} \cite{book:realbook} and its
+successor The New Real Book \cite{book:newrealbook}:
 
 \begin{itemize}
  \item New Real Book Chords
@@ -155,76 +125,76 @@ same handwritten font.} \cite{book:realbook} and its successor The New Real Book
  \item RealBook Chords
 \end{itemize}
 
-\realbookchords does \emph{not} offer these fonts. Instead it offers easy to use macros
+\realbookchords\ does \emph{not} offer these fonts. Instead it offers easy to use macros
 to use the first font with \hologo{XeLaTeX} or \hologo{LuaLaTeX} if it is installed
 on your system. Especially a macro for the intuitive usage of the sometimes rather
 hidden symbols for the creation of chord symbols is offered.
 
 \section{Setup}
-\realbookchords defines a few options which can be globally set using
-\begin{beschreibung}
- \Befehl{RBCsetup}{<options>}
-\end{beschreibung}
+\realbookchords\ defines a few options which can be globally set using
+\begin{commands}
+  \command{RBCsetup}[\marg{options}]
+\end{commands}
 The options follow a key/value system like in many other \LaTeX\ packages.
 
 \section{The Fonts}
-Now first let's take a look at the fonts. You can get them\footnote{Just in case
-the website isn't reachable any more or the fonts are no longer distributed
-there you can also get a copy from me. In this case just send me an email.}
-at \url{http://notation.jochenpietsch.de/}. They are placed under the Creative
-Commons Attribution-Noncommercial-Share Alike~3.0 Unported License \ccbyncsaeu.
-Jochen Pietsch who designed the fonts says there that he doesn't develop the fonts
-any further so we have to live with any shortcomings:
-
-\begin{zitat}[Jochen Pietsch]
- Please note, these fonts are still in beta-stage, so you might note some missing
- characters, or you may need to tweak the layout. Because my interest in this
- project has decreased, I have no plans to do any further improvements.
-\end{zitat}
-
-The license of the fonts forbids to use them for commercial purposes. This is not
-strictly true for this package but as it is rather useless without them, well\ldots
+Now first let's take a look at the fonts.  They used to be available at
+\url{http://notation.jochenpietsch.de/} and are placed under the Creative
+Commons Attribution-Noncommercial-Share Alike~3.0 Unported License
+\ccbyncsaeu.  I provide them on \realbookchords' BitBucket site
+\url{https://bitbucket.org/cgnieder/realbookchords/}. Jochen Pietsch who
+designed the fonts says there that he doesn't develop the fonts any further so
+we have to live with any shortcomings:
+\begin{cnltxquote}[Jochen Pietsch]
+  Please note, these fonts are still in beta-stage, so you might note some
+  missing characters, or you may need to tweak the layout. Because my interest
+  in this project has decreased, I have no plans to do any further
+  improvements.
+\end{cnltxquote}
+The license of the fonts forbids to use them for commercial purposes.  This is
+not strictly true for this package but as it is rather useless without them,
+well\ldots
 
 This documentation defines new font families for two of the three fonts, the third
 one is defined by \realbookchords.
-\begin{beispiel}
- % from the preamble of this document
- \newfontfamily\RealBookTitle{Real Book Title}
- \newfontfamily\RealBookChords{RealBook Chords}
-\end{beispiel}
+\begin{sourcecode}
+  % from the preamble of this document
+  \newfontfamily\RealBookTitle{Real Book Title}
+  \newfontfamily\RealBookChords{RealBook Chords}
+\end{sourcecode}
 
 The package provides this font family switch:
-\begin{beschreibung}
- \Befehl{NewRealBookChords}\newline
-   activate the font family \enquote{New Real Book Chords}
-\end{beschreibung}
+\begin{commands}
+  \command{NewRealBookChords}
+    activate the font family \enquote{New Real Book Chords}
+\end{commands}
 
 \subsection{New Real Book Chords}
 The most important font for this package is \enquote{New Real Book Chords}. The
 font has only a limited number of characters since its purpose is to build chords.
 This also means that it has some unexpected symbols. But have a look for yourself:
-\begin{beispiel}
- \normalsize\NewRealBookChords ABCDEFGHIJKLMNOPQRSTUVWXYZ \\
- a cdefghijklmnopqrstuvwxyz 0123456789 \\
- .,:!/*="'\&()[]+-\textordmasculine\% \\
- b\`{a}\ss{} \#{}\~{a}? < > ; {\makeatletter @} \_ \\
- \'{a} \aa{} \"{a} \^{a} \`{A} \'{A} \^{A} \~{A} \"{A} \AA{} \AE{} \"{E} \`{E} \'{E}
-\end{beispiel}
+\begin{example}
+  \normalsize\NewRealBookChords ABCDEFGHIJKLMNOPQRSTUVWXYZ \\
+  a cdefghijklmnopqrstuvwxyz 0123456789 \\
+  .,:!/*="'\&()[]+-\textordmasculine\% \\
+  b\`{a}\ss{} \#{}\~{a}? < > ; {\makeatletter @} \_ \\
+  \'{a} \aa{} \"{a} \^{a} \`{A} \'{A} \^{A} \~{A} \"{A} \AA{} \AE{} \"{E} \`{E} \'{E}
+\end{example}
 
 \subsection{Real Book Title}
-The following example is simply to show you the font, \realbookchords does not
+The following example is simply to show you the font, \realbookchords\ does not
 use it at all.
-\begin{beispiel}
- \normalsize\RealBookTitle ABCDEFGHIJKLMNOPQRSTUVWXYZ \\
- abcdefghijklmnopqrstuvwxyz 01234 6 -/\_
-\end{beispiel}
+\begin{example}
+  \normalsize\RealBookTitle ABCDEFGHIJKLMNOPQRSTUVWXYZ \\
+  abcdefghijklmnopqrstuvwxyz 01234 6 -/\_
+\end{example}
 
 \subsection{RealBook Chords}
-The following example is simply to show you the font, \realbookchords does not
+The following example is simply to show you the font, \realbookchords\ does not
 use it at all.
-\begin{beispiel}
- \normalsize\RealBookChords ABCDEFG ab s 01 34567 9 \#()+-\textasciicircum
-\end{beispiel}
+\begin{example}
+  \normalsize\RealBookChords\ ABCDEFG ab s 01 34567 9 \#()+-\textasciicircum
+\end{example}
 
 \section{Shortcomings}
 Since the font is missing some symbols, for instance the uppercase delta for a
@@ -239,290 +209,300 @@ I'll first have to be able to buy the font and experiment with it a bit.
 \section{Typesetting Chords}
 It's time to get to the important stuff: the chords. To typeset them there is one
 basic command:
-\begin{beschreibung}
- \Befehl{rbc}[<options>]{<chord specs>}
-\end{beschreibung}
-The \ma{<chord specs>} will be explained in detail in the rest of the documentation.
+\begin{commands}
+  \command{rbc}[\oarg{options}\marg{chord specs}]
+    The \meta{chord specs} will be explained in detail in the rest of the
+    documentation.
+\end{commands}
 
 \subsection{Basics}
 The basic usage is pretty self-explanatory:
-\begin{beispiel}
- \rbc{Ab9} \rbc{Cmi} \rbc{E+} \rbc{Gma9} \rbc{F\#mi9} \rbc{Db13}
-\end{beispiel}
+\begin{example}
+  \rbc{Ab9} \rbc{Cmi} \rbc{E+} \rbc{Gma9} \rbc{F\#mi9} \rbc{Db13}
+\end{example}
 Note that this is nearly but not exactly the same as using the font directly:
-\begin{beispiel}
- \NewRealBookChords Ab9 Cmi E+ Gma9 F\#mi9 Db13
-\end{beispiel}
-The font provides the characters \rbc{>} and \rbc{<}. \cmd{rbc} replaces the strings
+\begin{example}
+  \NewRealBookChords Ab9 Cmi E+ Gma9 F\#mi9 Db13
+\end{example}
+The font provides the characters \rbc{>} and \rbc{<}. \cs{rbc} replaces the strings
 \code{mi} and \code{ma} with them. You have also seen that a \code{b} gives \rbc{b}
-for a flat root and \verb+\#+ gives \rbc{\#} for a sharp root.
+for a flat root and \verbcode+\#+ gives \rbc{\#} for a sharp root.
 
 \subsection{Extensions}
 One very important aspect of \enquote{jazzy} chords is tensions. The basic tensions
 are clear -- just insert the intervall number:
-\begin{beispiel}
- \rbc{G7} \rbc{A9} \rbc {F11} \rbc{E13} \rbc{B7+}
-\end{beispiel}
-Often enough one needs alterated extensions. \realbookchords defines macros
+\begin{example}
+  \rbc{G7} \rbc{A9} \rbc {F11} \rbc{E13} \rbc{B7+}
+\end{example}
+Often enough one needs alterated extensions. \realbookchords\ defines macros
 to access the characters \rbc{\b} and \rbc{\k} easily:
-\begin{beschreibung}
- \Befehl{b} \rbc{\b}\newline
-   minor/diminished extension
- \Befehl{f}\newline
-   alias for \cmd{b}
- \Befehl{k} \rbc{\k}\newline
-   major/augmented extension
- \Befehl{s}\newline
-   alias for \cmd{k}
-\end{beschreibung}
-Note that these macros are only valid inside \cmd{rbc} so that the usual
-meaning of, \textit{e.g.}, \cmd{b} still holds outside. Now let's see them in
-action:
-\begin{beispiel}
+\begin{commands}
+  \command{b}
+    \rbc{\b} minor/diminished extension
+  \command{f}
+    alias for \cs{b}
+  \command{k}
+    \rbc{\k} major/augmented extension
+  \command{s}
+    alias for \cs{k}
+\end{commands}
+Note that these macros are only valid inside \cs{rbc} so that the usual
+meaning of, \eg, \cs{b} still holds outside. Now let's see them in action:
+\begin{example}
   \rbc{Fmi7(\b5)} \rbc{G7(\k9)} \rbc{Eb7(\b9)} \rbc{Db9(\k11)} \rbc{Cmi7(5-)}
-\end{beispiel}
+\end{example}
 
 There are also some \enquote{extension descriptions}:
-\begin{beispiel}
- \rbc{Cmaj9} \rbc{Bbadd9} \rbc{Absus4} \rbc{Galt} \rbc{F7omit3} \rbc{E\#dim}
- \rbc{Daug}
-\end{beispiel}
-Since they're not all available as single characters, \realbookchords fakes the
+\begin{example}
+  \rbc{Cmaj9} \rbc{Bbadd9} \rbc{Absus4} \rbc{Galt} \rbc{F7omit3} \rbc{E\#dim}
+  \rbc{Daug}
+\end{example}
+Since they're not all available as single characters, \realbookchords\ fakes the
 missing ones. This results in inconsistent looks. That's why \realbookchords
 provides an option so that all six are faked:
-\begin{beschreibung}
- \Option{use-fake-symbols}{\default{true}|false}\Default{false}
-   switch between original characters and faked ones.
-\end{beschreibung}
-\begin{beispiel}
- \RBCsetup{use-fake-symbols}
- \rbc{Cmaj9} \rbc{Bbadd9} \rbc{Absus4} \rbc{Galt} \rbc{F7omit3} \rbc{E\#dim}
- \rbc{Daug}
-\end{beispiel}
+\begin{options}
+  \keybool{use-fake-symbols}\Default{false}
+    switch between original characters and faked ones.
+\end{options}
+\begin{example}
+  \RBCsetup{use-fake-symbols}
+  \rbc{Cmaj9} \rbc{Bbadd9} \rbc{Absus4} \rbc{Galt} \rbc{F7omit3} \rbc{E\#dim}
+  \rbc{Daug}
+\end{example}
 
 \subsection{Double Extensions}
 Sometimes more than one alterated extension needs to be indicated. The
 \enquote{New Real Book Chords} font provides a number of characters for this
-purpose. \realbookchords provides five macros to access them easily:
-\begin{beschreibung}
- \Befehl{bb}{<intervalls>}\newline
-   \verb=\rbc{\bb{13,9}}= \rbc{\bb{13,9}}
- \Befehl{ff}\newline
-   alias for \cmd{bb}
- \Befehl{bk}{<intervalls>}\newline
-   \verb=\rbc{\bk{13,9}}= \rbc{\bk{13,9}}
- \Befehl{fs}\newline
-   alias for \cmd{bk}
- \Befehl{bs}\newline
-   alias for \cmd{bk}
- \Befehl{kb}{<intervalls>}\newline
-   \verb=\rbc{\kb{13,9}}= \rbc{\kb{13,9}}
- \Befehl{sf}\newline
-   alias for \cmd{kb}
- \Befehl{sb}\newline
-   alias for \cmd{kb}
- \Befehl{kk}{<intervalls>}\newline
-   \verb=\rbc{\kk{13,9}}= \rbc{\kk{13,9}}
- \Befehl{ss}\newline
-   alias for \cmd{kk}
- \Befehl{dt}[<alterations>]{<intervalls>}\newline
-   \verb=\dt[bb]{13,9}= \dt[bb]{13,9}
-\end{beschreibung}
-There are four different combinations of alterations. For each there is a macro,
-for some of these there are also aliases since “k” (German: “Kreuz”) may not be
-the natural choice for everyone.
-The fifth macro also provides a possibility to access to the for combinations but
-also enables to only alterate only one of the two extensions. Unlike the first
-four macros \cmd{dt} is \emph{not only inside} \cmd{rbc} defined but can also be
-used in normal text.
+purpose. \realbookchords\ provides five macros to access them easily:
+\begin{commands}
+  \command{bb}[\marg{intervalls}]
+    \verbcode=\rbc{\bb{13,9}}= \rbc{\bb{13,9}}
+  \command{ff}
+    alias for \cs{bb}
+  \command{bk}[\marg{intervalls}]
+    \verbcode=\rbc{\bk{13,9}}= \rbc{\bk{13,9}}
+  \command{fs}
+    alias for \cs{bk}
+  \command{bs}
+    alias for \cs{bk}
+  \command{kb}[\marg{intervalls}]
+    \verbcode=\rbc{\kb{13,9}}= \rbc{\kb{13,9}}
+  \command{sf}
+    alias for \cs{kb}
+  \command{sb}
+    alias for \cs{kb}
+  \command{kk}[\marg{intervalls}]
+    \verbcode=\rbc{\kk{13,9}}= \rbc{\kk{13,9}}
+  \command{ss}
+    alias for \cs{kk}
+  \command{dt}[\oarg{alterations>}\marg{intervalls}]
+    \verbcode=\dt[bb]{13,9}= \dt[bb]{13,9}
+\end{commands}
+There are four different combinations of alterations. For each there is a
+macro, for some of these there are also aliases since “k” (German: “Kreuz”)
+may not be the natural choice for everyone.  The fifth macro also provides a
+possibility to access to the for combinations but also enables to only
+alterate only one of the two extensions. Unlike the first four macros \cs{dt}
+is \emph{not only inside} \cs{rbc} defined but can also be used in normal
+text.
 
-All possible \oa{<alterations>} are shown below:
-\begin{beispiel}
- \dt{13,9} \dt[bb]{13,9} \dt[bk]{13,9} \dt[kb]{13,9} \dt[kk]{13,9}
- \dt[B]{13,9} \dt[K]{13,9} \dt[b]{13,9} \dt[k]{13,9}
- 
- % second possible representation:
- \dt{13,9} \dt[ff]{13,9} \dt[fs]{13,9} \dt[sf]{13,9} \dt[ss]{13,9}
- \dt[F]{13,9} \dt[S]{13,9} \dt[f]{13,9} \dt[s]{13,9}
- 
-  % third possible representation:
- \dt{13,9} \dt[bb]{13,9} \dt[bs]{13,9} \dt[sb]{13,9} \dt[ss]{13,9}
- \dt[B]{13,9} \dt[S]{13,9} \dt[b]{13,9} \dt[s]{13,9}
-\end{beispiel}
+All possible \meta{alterations} are shown below:
+\begin{example}
+  \dt{13,9} \dt[bb]{13,9} \dt[bk]{13,9} \dt[kb]{13,9} \dt[kk]{13,9}
+  \dt[B]{13,9} \dt[K]{13,9} \dt[b]{13,9} \dt[k]{13,9}
+  
+  % second possible representation:
+  \dt{13,9} \dt[ff]{13,9} \dt[fs]{13,9} \dt[sf]{13,9} \dt[ss]{13,9}
+  \dt[F]{13,9} \dt[S]{13,9} \dt[f]{13,9} \dt[s]{13,9}
+  
+   % third possible representation:
+  \dt{13,9} \dt[bb]{13,9} \dt[bs]{13,9} \dt[sb]{13,9} \dt[ss]{13,9}
+  \dt[B]{13,9} \dt[S]{13,9} \dt[b]{13,9} \dt[s]{13,9}
+\end{example}
 
 The intervall numbers for both extensions are given seperated with a comma. If the
 combination is present as a character like for example \rbc[double-extensions-brackets=false]{\dt{13,9}}
 then the character is used else it is faked: \rbc[double-extensions-brackets=false]{\dt{9,6}}
 
-\begin{beschreibung}
- \Option{fake-double-extensions}{\default{true}|false}\Default{false}
-   when \code{true} \emph{all} double extension numbers are faked.
- \Option{double-extensions-brackets}{\default{true}|false}\Default{false}
-   enclose the double extensions in brackets or not.
-\end{beschreibung}
-There is a shortcut for the \key{double-extensions-brackets} option: \cmd[rbca]{rbc*}. The brackets can also be set explicitly using \code{[} and \code{]}.
-\begin{beispiel}
- \rbc{Eb7\bk{9,5}} \rbc[double-extensions-brackets=false]{C\dt{9,6}} \rbc*{C\dt{9,6}} \rbc*{C[\bk{13,9}]}
-\end{beispiel}
+\begin{options}
+  \keybool{fake-double-extensions}\Default{false}
+    when \code{true} \emph{all} double extension numbers are faked.
+  \keybool{double-extensions-brackets}\Default{false}
+    enclose the double extensions in brackets or not.
+\end{options}
+There is a shortcut for the \key{double-extensions-brackets} option:
+\cs[rbca]{rbc*}. The brackets can also be set explicitly using \code{[} and
+\code{]}.
+\begin{example}
+  \rbc{Eb7\bk{9,5}} \rbc[double-extensions-brackets=false]{C\dt{9,6}}
+  \rbc*{C\dt{9,6}} \rbc*{C[\bk{13,9}]}
+\end{example}
 
 \subsection{Bass Notes}
 If you want to indicate a different bass note for the chord you simply seperate the
 main chord from the bass note with a slash. Please note: if the bass note is a
 flat or sharp note you have to enclose it in braces:
-\begin{beispiel}
- \rbc{Cmi7/{Bb}} \rbc{C7/G} \rbc{C/G} \rbc{E7/{G\#}}
-\end{beispiel}
+\begin{example}
+  \rbc{Cmi7/{Bb}} \rbc{C7/G} \rbc{C/G} \rbc{E7/{G\#}}
+\end{example}
 
 \subsection{Disabling the Parsing}
-If you don't want all the parsing of the \cmd{rbc} command but simply access the
+If you don't want all the parsing of the \cs{rbc} command but simply access the
 \enquote{New Real Book Chords} font you can of course use the font family switch
 presented earlier:
-\begin{beispiel}
- \NewRealBookChords Ama7(omit3) [major]
-\end{beispiel}
+\begin{example}
+  \NewRealBookChords Ama7(omit3) [major]
+\end{example}
 
 You can also use the following option:
-\begin{beschreibung}
- \Option{parse}{\default{true}|false}\Default{true}
-   switch off the parsing.
-\end{beschreibung}
-\begin{beispiel}
- \texttt{parse=true}: \rbc{Ama7(omit3) [major]} \\
- \texttt{parse=false}: \rbc[parse=false]{Ama7(omit3) [major]}
-\end{beispiel}
+\begin{options}
+  \keybool{parse}\Default{true}
+    switch off the parsing.
+\end{options}
+\begin{example}
+  \texttt{parse=true}: \rbc{Ama7(omit3) [major]} \\
+  \texttt{parse=false}: \rbc[parse=false]{Ama7(omit3) [major]}
+\end{example}
 
 \section{Song Titles}
 % TODO Optionen beschreiben
-\begin{beschreibung}
- \Befehl{SongTitle}[<left>]{<center>}\oa{<right}\newline
-   A centered title with options to put text to the left and the right of it.
- \Option{songtitle-format-left}{<code>}\Default{\cmd*{NewRealBookChords}\cmd*{footnotesize}}
-   Format of the text to the left.
- \Option{songtitle-format-center}{<code>}\Default{\cmd*{NewRealBookChords}\cmd*{Large}\cmd*{centering}}
-   Format of the text in the center.
- \Option{songtitle-format-right}{<code>}\Default{\cmd*{NewRealBookChords}\cmd*{footnotesize}}
-   Format of the text to the right.
- \Option{songtitle-pos-left}{l|c|r}\Default{l}
-   Alignment of the text to the left.
- \Option{songtitle-pos-right}{l|c|r}\Default{l}
-   Alignment of the text to the right.
-\end{beschreibung}
+\begin{commands}
+  \command{SongTitle}[\oarg{left}\marg{center}\oarg{right}]
+    A centered title with options to put text to the left and the right of it.
+\end{commands}
+\begin{options}
+  \keyval{songtitle-format-left}{code}%
+  \Default{\cs*{NewRealBookChords}\cs*{footnotesize}}
+    Format of the text to the left.
+  \keyval{songtitle-format-center}{code}%
+  \Default{\cs*{NewRealBookChords}\cs*{Large}\cs*{centering}}
+    Format of the text in the center.
+  \keyval{songtitle-format-right}{code}%
+  \Default{\cs*{NewRealBookChords}\cs*{footnotesize}}
+    Format of the text to the right.
+  \keychoice{songtitle-pos-left}{l,c,r}\Default{l}
+    Alignment of the text to the left.
+  \keychoice{songtitle-pos-right}{l,c,r}\Default{l}
+    Alignment of the text to the right.
+\end{options}
 
 As an example: the following code \ldots
-\begin{beispiel}[code only]
- \SongTitle{Begin The Beguine}
- \par\vskip\baselineskip
- \SongTitle[Medium Swing Tempo]{Begin The Beguine}
- \par\vskip\baselineskip
- \SongTitle{Begin The Beguine}[Cole Porter\\arr.: Jerry Sears]
- \par\vskip\baselineskip 
- \RBCsetup{songtitle-pos-right=r}
- \SongTitle{Begin The Beguine}[Cole Porter\\arr.: Jerry Sears]
-\end{beispiel}
+\begin{sourcecode}
+  \SongTitle{Begin The Beguine}
+  \par\vskip\baselineskip
+  \SongTitle[Medium Swing Tempo]{Begin The Beguine}
+  \par\vskip\baselineskip
+  \SongTitle{Begin The Beguine}[Cole Porter\\arr.: Jerry Sears]
+  \par\vskip\baselineskip 
+  \RBCsetup{songtitle-pos-right=r}
+  \SongTitle{Begin The Beguine}[Cole Porter\\arr.: Jerry Sears]
+\end{sourcecode}
 \ldots{} produces this:
 
 \begingroup
- \SongTitle{Begin The Beguine}
- \par\vskip\baselineskip
- \SongTitle[Medium Swing Tempo]{Begin The Beguine}
- \par\vskip\baselineskip
- \SongTitle{Begin The Beguine}[Cole Porter\\arr.: Jerry Sears]
- \par\vskip\baselineskip 
- \RBCsetup{songtitle-pos-right=r}
- \SongTitle{Begin The Beguine}[Cole Porter\\arr.: Jerry Sears]
+  \SongTitle{Begin The Beguine}
+  \par\vskip\baselineskip
+  \SongTitle[Medium Swing Tempo]{Begin The Beguine}
+  \par\vskip\baselineskip
+  \SongTitle{Begin The Beguine}[Cole Porter\\arr.: Jerry Sears]
+  \par\vskip\baselineskip 
+  \RBCsetup{songtitle-pos-right=r}
+  \SongTitle{Begin The Beguine}[Cole Porter\\arr.: Jerry Sears]
 \endgroup
 
 \section{See it in Action}
-Let's use the \cmd{rbc} command together with \paket{musixtex} for a real example.
-Both \paket{fontspec} which is loaded be \realbookchords and \paket{musixtex}
-define the command \cmd{breve}. The definition by \paket{fontspec} takes place
-\verb=\AtBeginDocument=.
+Let's use the \cs{rbc} command together with \pkg{musixtex} for a real example.
+Both \pkg{fontspec} which is loaded be \realbookchords\ and \pkg{musixtex}
+define the command \cs{breve}. The definition by \pkg{fontspec} takes place
+\verbcode=\AtBeginDocument=.
 
-A similar problem arises when \paket{musixtex} is used together with \paket{biblatex}:
-they both define \cmd{addspace}.
+A similar problem arises when \pkg{musixtex} is used together with \pkg{biblatex}:
+they both define \cs{addspace}.
 
 You can do something like the following to get them to work together:
-\begin{beispiel}[code only]
- \documentclass{article}
- \usepackage{musixtex}
- \let\mbreve\breve
- \let\breve\relax
- \usepackage{realbookchords}
- \begin{document}
+\begin{sourcecode}
+  \documentclass{article}
+  \usepackage{musixtex}
+  \let\mbreve\breve
+  \let\breve\relax
+  \usepackage{realbookchords}
+  \begin{document}
   do stuff, e.g. restore the `musixtex' definition of \breve
- \end{document}
-\end{beispiel}
+  \end{document}
+\end{sourcecode}
 
-Or -- even easier -- load \realbookchords with the \key{load-musixtex} option and
+Or -- even easier -- load \realbookchords\ with the \key{load-musixtex} option and
 let it handle things. However, this doesn't always work as expected, yet.
-\begin{beispiel}[code only]
- \documentclass{article}
- \usepackage[load-musixtex]{realbookchords}
- \begin{document}
+\begin{sourcecode}
+  \documentclass{article}
+  \usepackage[load-musixtex]{realbookchords}
+  \begin{document}
   do stuff, e.g. restore the `musixtex' definition of \breve
- \end{document}
-\end{beispiel}
+  \end{document}
+\end{sourcecode}
 Note that this option should be used as a package option and \emph{not} via
-\cmd{RBCsetup}.
+\cs{RBCsetup}.
 
-If you use this option \realbookchords loads \paket{musixtex} and sets \cmd{breve}
-to the meaning of \paket{fontspec}. You have the possibility to access \paket{musixtex}'s
+If you use this option \realbookchords\ loads \pkg{musixtex} and sets \cs{breve}
+to the meaning of \pkg{fontspec}. You have the possibility to access \pkg{musixtex}'s
 version:
-\begin{beschreibung}
- \Befehl{musixtexbreve}\newline
-   \paket{musixtex}'s original definition.
- \Befehl{fontspecbreve}\newline
-   \paket{fontspec}'s original definition.
- \Option{breve-version}{fontspec|musixtex}\newline
-   sets \cmd{breve} to the definition of the specified package.
- \Befehl{musixtexaddspace}\newline
-   \realbookchords undefines \paket{musixtex}'s \cmd{addspace} but stores the
-   definition in \cmd{musixtexaddspace}. You'll probably need to restore
-   \paket{musixtex}'s definition. If you don't use \paket{biblatex} in the
-   same document there shouldn't be a problem.
- \Option{addspace-version}{musixtex}\newline
-   restores \paket{musixtex}'s definition.
-\end{beschreibung}
+\begin{commands}
+  \command{musixtexbreve}
+    \pkg{musixtex}'s original definition.
+  \command{fontspecbreve}
+    \pkg{fontspec}'s original definition.
+  \command{musixtexaddspace}
+    \realbookchords\ undefines \pkg{musixtex}'s \cs{addspace} but stores the
+    definition in \cs{musixtexaddspace}.  You'll probably need to restore
+    \pkg{musixtex}'s definition.  If you don't use \pkg{biblatex} in the
+    same document there shouldn't be a problem.
+\end{commands}
+\begin{options}
+  \keychoice{breve-version}{fontspec,musixtex}
+    sets \cs{breve} to the definition of the specified package.
+  \keychoice{addspace-version}{musixtex}
+    restores \pkg{musixtex}'s definition.
+\end{options}
 
 Let's take the first eight bars of Kenny Durham's \enquote{Blue Bossa} as an example:
 
-\begin{beispiel}[code only]
-\begin{music}
- \let\addspace\musixtexaddspace
- \parindent0pt \generalmeter{\meterfrac44}\setsign{1}{-3}\nobarnumbers
- \SongTitle{Blue Bossa}[\\Kenny Durham]
- \startpiece
- \addspace{.5\afterruleskip}%
- \NOtes\qa g\en
- \doublebar % 1
- \NOtes\Uptext{\rbc{Cmi6}}\qlp n\en
- \Notes\ca l\en
- \Notes\qa k\en
- \Notes\isluru0j\ca j\en
- \bar % 2
- \NOtes\tslur0j\hlp j\en
- \NOtes\qa i\en
- \bar % 3
- \NOTes\Uptext{\rbc{Fmi7}}\ha h\en
- \Notes\qlp n\en
- \Notes\isluru0m\ca m\en
- \bar % 4
- \NOTEs\tslur0m\wh m\en
- \bar % 5
- \NOtes\Uptext{\rbc{Dmi7(\b5)}}\qlp m\en
- \Notes\ca{lk}\qa j\en
- \Notes\isluru0i\ca i\en
- \bar % 6
- \NOTEs\Uptext{\rbc{G7(\k5)}}\tslur0i\hlp i\en
- \Notes\qa h\en
- \bar % 7
- \NOTes\Uptext{\rbc{Cmi6}}\ha g\en
- \Notes\qlp m\isluru0l\ca l\en
- \bar % 8
- \NOTEs\tslur0l\wh l\en
- \endpiece
-\end{music}
-\end{beispiel}
+\begin{sourcecode}
+  \begin{music}
+    \let\addspace\musixtexaddspace
+    \parindent0pt \generalmeter{\meterfrac44}\setsign{1}{-3}\nobarnumbers
+    \SongTitle{Blue Bossa}[\\Kenny Durham]
+    \startpiece
+    \addspace{.5\afterruleskip}%
+    \NOtes\qa g\en
+    \doublebar % 1
+    \NOtes\Uptext{\rbc{Cmi6}}\qlp n\en
+    \Notes\ca l\en
+    \Notes\qa k\en
+    \Notes\isluru0j\ca j\en
+    \bar % 2
+    \NOtes\tslur0j\hlp j\en
+    \NOtes\qa i\en
+    \bar % 3
+    \NOTes\Uptext{\rbc{Fmi7}}\ha h\en
+    \Notes\qlp n\en
+    \Notes\isluru0m\ca m\en
+    \bar % 4
+    \NOTEs\tslur0m\wh m\en
+    \bar % 5
+    \NOtes\Uptext{\rbc{Dmi7(\b5)}}\qlp m\en
+    \Notes\ca{lk}\qa j\en
+    \Notes\isluru0i\ca i\en
+    \bar % 6
+    \NOTEs\Uptext{\rbc{G7(\k5)}}\tslur0i\hlp i\en
+    \Notes\qa h\en
+    \bar % 7
+    \NOTes\Uptext{\rbc{Cmi6}}\ha g\en
+    \Notes\qlp m\isluru0l\ca l\en
+    \bar % 8
+    \NOTEs\tslur0l\wh l\en
+    \endpiece
+  \end{music}
+\end{sourcecode}
 
 \begin{music}
  \let\addspace\musixtexaddspace
@@ -559,17 +539,5 @@ Let's take the first eight bars of Kenny Durham's \enquote{Blue Bossa} as an exa
  \NOTEs\tslur0l\wh l\en
  \endpiece
 \end{music}
-
-\appendix
-
-\printbibliography
-
-\addsec{Implementation}
-\implementation[linerange={35-1000},firstnumber=35]
-
-\indexprologue{\noindent Section titles are indicated \textbf{bold}, packages
-\textsf{sans serif}, commands \code{\textbackslash\textcolor{code}{brown}}
- and options \textcolor{key}{\code{yellow}}.\par\bigskip}
-\printindex
 
 \end{document}
